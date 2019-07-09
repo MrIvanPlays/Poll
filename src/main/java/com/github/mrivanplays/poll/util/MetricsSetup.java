@@ -19,48 +19,41 @@
  **/
 package com.github.mrivanplays.poll.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.mrivanplays.poll.Poll;
+import com.github.mrivanplays.poll.question.Question;
 import lombok.RequiredArgsConstructor;
 import org.bstats.bukkit.Metrics;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.question.Question;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
-public class MetricsSetup
-{
+public class MetricsSetup {
 
     private final Poll plugin;
 
-    public void setup()
-    {
-        Metrics metrics = new Metrics( plugin );
-        metrics.addCustomChart( new Metrics.SimplePie( "using_auto_announcer", () ->
-                returnBoolean( plugin.getConfig().getBoolean( "question-announcer.enable" ) ) ) );
-        metrics.addCustomChart( new Metrics.SimplePie( "question_count", () ->
-                returnInt( plugin.getConfig().getConfigurationSection( "questions" ).getKeys( false ).size() ) ) );
-        metrics.addCustomChart( new Metrics.SimplePie( "average_question_answer_count", () ->
-        {
+    public void setup() {
+        Metrics metrics = new Metrics(plugin);
+        metrics.addCustomChart(new Metrics.SimplePie("using_auto_announcer", () ->
+                returnBoolean(plugin.getConfig().getBoolean("question-announcer.enable"))));
+        metrics.addCustomChart(new Metrics.SimplePie("question_count", () ->
+                returnInt(plugin.getConfig().getConfigurationSection("questions").getKeys(false).size())));
+        metrics.addCustomChart(new Metrics.SimplePie("average_question_answer_count", () -> {
             List<Integer> sizes = new ArrayList<>();
-            for ( Question question : plugin.getQuestionHandler().getQuestions() )
-            {
-                sizes.add( question.getValidAnswers().size() );
+            for (Question question : plugin.getQuestionHandler().getQuestions()) {
+                sizes.add(question.getValidAnswers().size());
             }
-            double average = sizes.parallelStream().mapToInt( val -> val ).average().orElse( 0.0 );
-            return returnInt( Math.round( Math.round( average ) ) );
-        } ) );
+            double average = sizes.parallelStream().mapToInt(val -> val).average().orElse(0.0);
+            return returnInt(Math.round(Math.round(average)));
+        }));
     }
 
-    private String returnBoolean(boolean bool)
-    {
+    private String returnBoolean(boolean bool) {
         return bool ? "Yes" : "No";
     }
 
-    private String returnInt(int s)
-    {
-        return Integer.toString( s );
+    private String returnInt(int s) {
+        return Integer.toString(s);
     }
 
 }

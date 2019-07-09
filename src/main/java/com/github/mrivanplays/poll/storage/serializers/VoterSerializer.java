@@ -19,29 +19,24 @@
  **/
 package com.github.mrivanplays.poll.storage.serializers;
 
-import java.util.UUID;
-
+import com.github.mrivanplays.poll.util.Voter;
 import com.google.gson.JsonObject;
 
-import com.github.mrivanplays.poll.util.Voter;
+import java.util.UUID;
 
-public class VoterSerializer
-{
+public class VoterSerializer {
 
-    public static Voter deserialize(JsonObject object)
-    {
-        if ( !object.has( "uuid" ) || !object.has( "answered" ) )
-        {
-            throw new RuntimeException( "Invalid json parsed" );
+    public static Voter deserialize(JsonObject object) {
+        if (!object.has("uuid") || !object.has("answered")) {
+            throw new RuntimeException("Invalid json parsed");
         }
-        return new Voter( UUID.fromString( object.get( "uuid" ).getAsString() ), object.get( "answered" ).getAsString() );
+        return new Voter(UUID.fromString(object.get("uuid").getAsString()), object.get("answered").getAsString());
     }
 
-    public static JsonObject serialize(Voter src)
-    {
+    public static JsonObject serialize(Voter src) {
         JsonObject object = new JsonObject();
-        object.addProperty( "uuid", src.getUuid().toString() );
-        object.addProperty( "answered", src.getAnswered() );
+        object.addProperty("uuid", src.getUuid().toString());
+        object.addProperty("answered", src.getAnswered());
         return object;
     }
 }

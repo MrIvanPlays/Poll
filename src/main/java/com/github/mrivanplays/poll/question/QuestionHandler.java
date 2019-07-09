@@ -19,10 +19,10 @@
  **/
 package com.github.mrivanplays.poll.question;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import com.github.mrivanplays.poll.Poll;
+import com.github.mrivanplays.poll.storage.SerializableQuestion;
+import com.github.mrivanplays.poll.storage.SerializableQuestions;
+import com.github.mrivanplays.poll.util.Voter;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -31,84 +31,70 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.storage.SerializableQuestion;
-import com.github.mrivanplays.poll.storage.SerializableQuestions;
-import com.github.mrivanplays.poll.util.Voter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
-public class QuestionHandler
-{
+public class QuestionHandler {
 
     private final Poll plugin;
 
-    public List<Question> getQuestions()
-    {
+    public List<Question> getQuestions() {
         List<Question> questions = new ArrayList<>();
         FileConfiguration config = plugin.getConfig();
-        for ( String key : config.getConfigurationSection( "questions" ).getKeys( false ) )
-        {
-            String questionMessage = config.getString( "questions." + key + ".question" );
-            List<String> answers = config.getStringList( "questions." + key + ".answers" );
-            Question question = new Question( key, questionMessage, answers );
+        for (String key : config.getConfigurationSection("questions").getKeys(false)) {
+            String questionMessage = config.getString("questions." + key + ".question");
+            List<String> answers = config.getStringList("questions." + key + ".answers");
+            Question question = new Question(key, questionMessage, answers);
             List<SerializableQuestion> serializableQuestions = SerializableQuestions.getForSerialize();
-            if ( !serializableQuestions.isEmpty() )
-            {
-                for ( SerializableQuestion serQ : serializableQuestions )
-                {
-                    if ( serQ.getQuestionIdentifier().equalsIgnoreCase( question.getIdentifier() ) )
-                    {
-                        for ( Voter voter : serQ.getVoters() )
-                        {
-                            question.addAnswer( voter );
+            if (!serializableQuestions.isEmpty()) {
+                for (SerializableQuestion serQ : serializableQuestions) {
+                    if (serQ.getQuestionIdentifier().equalsIgnoreCase(question.getIdentifier())) {
+                        for (Voter voter : serQ.getVoters()) {
+                            question.addAnswer(voter);
                         }
                     }
                 }
-            } else
-            {
-                SerializableQuestions.register( new SerializableQuestion( question.getIdentifier(), question.getAnswered() ) );
+            } else {
+                SerializableQuestions.register(new SerializableQuestion(question.getIdentifier(), question.getAnswered()));
             }
-            questions.add( question );
+            questions.add(question);
         }
         return questions;
     }
 
-    public void modify(Question question)
-    {
-        Optional<SerializableQuestion> serializableOpt = SerializableQuestions.getEquivalient( question );
-        if ( !serializableOpt.isPresent() )
-        {
-            SerializableQuestions.register( new SerializableQuestion( question.getIdentifier(), question.getAnswered() ) );
+    public void modify(Question question) {
+        Optional<SerializableQuestion> serializableOpt = SerializableQuestions.getEquivalient(question);
+        if (!serializableOpt.isPresent()) {
+            SerializableQuestions.register(new SerializableQuestion(question.getIdentifier(), question.getAnswered()));
             return;
         }
         SerializableQuestion serializable = serializableOpt.get();
         SerializableQuestion dupeSerializable = serializable.duplicate();
-        dupeSerializable.setVoters( question.getAnswered() );
-        SerializableQuestions.replace( serializable, dupeSerializable );
+        dupeSerializable.setVoters(question.getAnswered());
+        SerializableQuestions.replace(serializable, dupeSerializable);
     }
 
-    public List<BaseComponent[]> getAnswersComponents(Question question)
-    {
+    public List<BaseComponent[]> getAnswersComponents(Question question) {
         List<BaseComponent[]> answersComponents = new ArrayList<>();
-        for ( String message : question.getValidAnswers() )
-        {
-            String transform = Poll.ANSWER_FUNCTION.apply( message );
-            BaseComponent[] component = new ComponentBuilder( plugin.color( message ) )
-                    .event( new HoverEvent( HoverEvent.Action.SHOW_TEXT,
-                            TextComponent.fromLegacyText( plugin.color( plugin.getConfig().getString( "messages.hover-message" ) ) ) ) )
-                    .event( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/poll vote " + question.getIdentifier() + " " + transform ) )
+        for (String message : question.getValidAnswers()) {
+            String transform = Poll.ANSWER_FUNCTION.apply(message);
+            BaseComponent[] component = new ComponentBuilder(plugin.color(message))
+                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            TextComponent.fromLegacyText(plugin.color(plugin.getConfig().getString("messages.hover-message")))))
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poll vote " + question.getIdentifier() + " " + transform))
                     .create();
-            answersComponents.add( component );
+            answersComponents.add(component);
         }
         return answersComponents;
     }
 
-    public Optional<Question> getQuestion(String identifier)
-    {
+    public Optional<Question> getQuestion(String identifier) {
         return getQuestions()
                 .stream()
                 .parallel()
-                .filter( question -> question.getIdentifier().toLowerCase().equalsIgnoreCase( identifier.toLowerCase() ) )
+                .filter(question -> question.getIdentifier().toLowerCase().equalsIgnoreCase(identifier.toLowerCase()))
                 .findFirst();
     }
 }

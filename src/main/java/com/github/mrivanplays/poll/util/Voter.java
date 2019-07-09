@@ -19,13 +19,12 @@
  **/
 package com.github.mrivanplays.poll.util;
 
-import java.util.UUID;
-
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
-public class Voter
-{
+public class Voter {
 
     private final UUID uuid;
     private final String answered;

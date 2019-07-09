@@ -19,105 +19,74 @@
  **/
 package com.github.mrivanplays.poll.storage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
+import com.github.mrivanplays.poll.storage.serializers.QuestionSerializer;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-
-import com.github.mrivanplays.poll.storage.serializers.QuestionSerializer;
-
-public class VotersFile
-{
+public class VotersFile {
 
     private final Gson gson;
     private final Type questionType;
     private final File file;
 
-    public VotersFile(File dataFolder)
-    {
-        questionType = new TypeToken<SerializableQuestion>()
-        {
-
+    public VotersFile(File dataFolder) {
+        questionType = new TypeToken<SerializableQuestion>() {
         }.getType();
         gson = new GsonBuilder()
-                .registerTypeAdapter( questionType, new QuestionSerializer() )
+                .registerTypeAdapter(questionType, new QuestionSerializer())
                 .create();
-        file = new File( dataFolder + File.separator, "questiondata.json" );
+        file = new File(dataFolder + File.separator, "questiondata.json");
         createFile();
     }
 
-    public List<SerializableQuestion> deserialize()
-    {
+    public List<SerializableQuestion> deserialize() {
         List<SerializableQuestion> questions = new ArrayList<>();
-        try ( Reader reader = new InputStreamReader( new FileInputStream( file ) ) )
-        {
-            JsonArray array = gson.fromJson( reader, JsonArray.class );
-            if ( array == null || array.size() == 0 )
-            {
+        try (Reader reader = new InputStreamReader(new FileInputStream(file))) {
+            JsonArray array = gson.fromJson(reader, JsonArray.class);
+            if (array == null || array.size() == 0) {
                 return Collections.emptyList();
             }
-            for ( JsonElement element : array )
-            {
-                if ( !element.isJsonObject() )
-                {
+            for (JsonElement element : array) {
+                if (!element.isJsonObject()) {
                     continue;
                 }
                 JsonObject question = element.getAsJsonObject();
-                questions.add( gson.fromJson( question, questionType ) );
+                questions.add(gson.fromJson(question, questionType));
             }
-        } catch ( IOException e )
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return questions;
     }
 
-    public void serialize(List<SerializableQuestion> questions)
-    {
+    public void serialize(List<SerializableQuestion> questions) {
         file.delete();
         createFile();
         JsonArray array = new JsonArray();
-        for ( SerializableQuestion question : questions )
-        {
-            array.add( gson.toJson( question, questionType ) );
+        for (SerializableQuestion question : questions) {
+            array.add(gson.toJson(question, questionType));
         }
-        try ( Writer writer = new OutputStreamWriter( new FileOutputStream( file ) ) )
-        {
-            gson.toJson( array, writer );
-        } catch ( IOException e )
-        {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
+            gson.toJson(array, writer);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void createFile()
-    {
-        if ( !file.exists() )
-        {
-            if ( !file.getParentFile().exists() )
-            {
+    private void createFile() {
+        if (!file.exists()) {
+            if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
-            try
-            {
+            try {
                 file.createNewFile();
-            } catch ( IOException ignored )
-            {
+            } catch (IOException ignored) {
             }
         }
     }

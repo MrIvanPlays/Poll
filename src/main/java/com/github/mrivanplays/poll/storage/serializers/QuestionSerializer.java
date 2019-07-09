@@ -19,10 +19,8 @@
  **/
 package com.github.mrivanplays.poll.storage.serializers;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
-
+import com.github.mrivanplays.poll.storage.SerializableQuestion;
+import com.github.mrivanplays.poll.util.Voter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -32,45 +30,39 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import com.github.mrivanplays.poll.util.Voter;
-import com.github.mrivanplays.poll.storage.SerializableQuestion;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
 
-public class QuestionSerializer implements JsonSerializer<SerializableQuestion>, JsonDeserializer<SerializableQuestion>
-{
+public class QuestionSerializer implements JsonSerializer<SerializableQuestion>, JsonDeserializer<SerializableQuestion> {
 
     @Override
-    public SerializableQuestion deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-    {
+    public SerializableQuestion deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject object = new JsonObject();
-        if ( !object.has( "questionIdentifier" ) || !object.has( "voters" ) )
-        {
-            throw new JsonParseException( "Invalid json parsed" );
+        if (!object.has("questionIdentifier") || !object.has("voters")) {
+            throw new JsonParseException("Invalid json parsed");
         }
         Collection<Voter> voters = new HashSet<>();
-        JsonArray votersArray = object.getAsJsonArray( "voters" );
-        for ( JsonElement element : votersArray )
-        {
-            if ( !element.isJsonObject() )
-            {
+        JsonArray votersArray = object.getAsJsonArray("voters");
+        for (JsonElement element : votersArray) {
+            if (!element.isJsonObject()) {
                 continue;
             }
             JsonObject voter = element.getAsJsonObject();
-            voters.add( VoterSerializer.deserialize( voter ) );
+            voters.add(VoterSerializer.deserialize(voter));
         }
-        return new SerializableQuestion( object.get( "questionIdentifier" ).getAsString(), voters );
+        return new SerializableQuestion(object.get("questionIdentifier").getAsString(), voters);
     }
 
     @Override
-    public JsonElement serialize(SerializableQuestion src, Type typeOfSrc, JsonSerializationContext context)
-    {
+    public JsonElement serialize(SerializableQuestion src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
         JsonArray votersArray = new JsonArray();
-        object.addProperty( "questionIdentifier", src.getQuestionIdentifier() );
-        for ( Voter voter : src.getVoters() )
-        {
-            votersArray.add( VoterSerializer.serialize( voter ) );
+        object.addProperty("questionIdentifier", src.getQuestionIdentifier());
+        for (Voter voter : src.getVoters()) {
+            votersArray.add(VoterSerializer.serialize(voter));
         }
-        object.add( "voters", votersArray );
+        object.add("voters", votersArray);
         return object;
     }
 

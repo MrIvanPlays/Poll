@@ -19,45 +19,37 @@
  **/
 package com.github.mrivanplays.poll.storage;
 
+import com.github.mrivanplays.poll.question.Question;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.mrivanplays.poll.question.Question;
-
-public class SerializableQuestions
-{
+public class SerializableQuestions {
 
     private static final List<SerializableQuestion> questions = new ArrayList<>();
 
-    public static Optional<SerializableQuestion> getEquivalient(Question question)
-    {
-        for ( SerializableQuestion ser : questions )
-        {
-            if ( ser.getVoters().containsAll( question.getAnswered() ) )
-            {
-                return Optional.of( ser );
+    public static Optional<SerializableQuestion> getEquivalient(Question question) {
+        for (SerializableQuestion ser : questions) {
+            if (ser.getVoters().containsAll(question.getAnswered())) {
+                return Optional.of(ser);
             }
         }
         return Optional.empty();
     }
 
-    public static void register(SerializableQuestion serializableQuestion)
-    {
-        if ( !questions.contains( serializableQuestion ) )
-        {
-            questions.add( serializableQuestion );
+    public static void register(SerializableQuestion serializableQuestion) {
+        if (!questions.contains(serializableQuestion)) {
+            questions.add(serializableQuestion);
         }
     }
 
-    public static void replace(SerializableQuestion old, SerializableQuestion newQuestion)
-    {
-        questions.remove( old );
-        questions.add( newQuestion );
+    public static void replace(SerializableQuestion old, SerializableQuestion newQuestion) {
+        questions.remove(old);
+        questions.add(newQuestion);
     }
 
-    public static List<SerializableQuestion> getForSerialize()
-    {
+    public static List<SerializableQuestion> getForSerialize() {
         return questions;
     }
 }
