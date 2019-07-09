@@ -44,6 +44,7 @@ public class MetricsSetup {
                 sizes.add(question.getValidAnswers().size());
             }
             double average = sizes.parallelStream().mapToInt(val -> val).average().orElse(0.0);
+            sizes.clear();
             return returnInt(Math.round(Math.round(average)));
         }));
     }
