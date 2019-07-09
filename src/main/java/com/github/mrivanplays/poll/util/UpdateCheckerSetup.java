@@ -42,7 +42,7 @@ public class UpdateCheckerSetup implements Listener {
         int spigotResourceId = 69153;
         String updateUrl = "https://www.spigotmc.org/resources/" + spigotResourceId + "/";
         if (plugin.getConfig().getBoolean("update-check")) {
-            UpdateChecker.init(plugin, spigotResourceId, (first, second) -> second.equalsIgnoreCase(first) ? first : second)
+            UpdateChecker.init(plugin, spigotResourceId, (first, second) -> second.equalsIgnoreCase(first) ? second : first)
                     .requestUpdateCheck().whenComplete((result, throwable) -> {
                 UpdateChecker.UpdateReason reason = result.getReason();
                 if (reason == UpdateChecker.UpdateReason.NEW_UPDATE) {
