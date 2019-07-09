@@ -10,3 +10,5 @@ commands:
     description: Main command for the plugin
   pollvotes:
     description: Counts the votes for a specific poll
+  pollsend:
+    description: Sends a poll to a specified player

@@ -28,6 +28,10 @@ question-announcer:
   random-order: true
   interval: 300
 
+# Should the plugin perform a check for update or no
+# !! IT IS RECOMMENDED TO LEAVE THIS TRUE !!
+update-check: true
+
 # All messages
 messages:
   hover-message: "&aClick to vote"
@@ -42,3 +46,6 @@ messages:
   pollvotes-usage: "&cUsage: /pollvotes <question identifier>"
   votes-for: "&eVotes for %question%"
   votes-message: "%answer% &rhas &e%votes% vote(s)"
+  pollsend-usage: "&cUsage: /pollsend <player name|all> <question identifier>"
+  player-not-found: "&cThat player cannot be found"
+  sent-success: "&aSuccess sent!"
