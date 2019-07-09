@@ -26,5 +26,10 @@ If applicable, add screenshots to help explain your problem.
 **Plugin version**
 Tell us the plugin's version (e.g. 1.0.0)
 
+**Server info**
+ - Platform (e.g. Spigot)
+ - Version ( e.g git-Spigot-df0eb25-efd8a2b (MC: 1.14.2) (Implementing API version 1.14.2-R0.1-SNAPSHOT) )
+ - Screenshot output of `/version`
+
 **Additional context**
 Add any other context about the problem here.
