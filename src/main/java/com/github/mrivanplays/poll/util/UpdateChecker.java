@@ -83,19 +83,32 @@ public class UpdateChecker implements Listener
         return "https://spigotmc.org/resources/" + projectId;
     }
 
-    private boolean updateAvailable()
+    private UpdateState getUpdateState()
     {
-        return !getOldVersion().equalsIgnoreCase( getNewVersion() );
+        if ( getOldVersion().contains( "SNAPSHOT" ) )
+        {
+            return UpdateState.DEV_BUILD;
+        }
+        if ( !getOldVersion().equalsIgnoreCase( getNewVersion() ) )
+        {
+            return UpdateState.AVAILABLE;
+        }
+        return UpdateState.UP_TO_DATE;
     }
 
     public void fetch()
     {
         plugin.getServer().getScheduler().runTaskAsynchronously( plugin, () ->
         {
-            if ( updateAvailable() )
+            if ( getUpdateState() == UpdateState.AVAILABLE )
             {
                 plugin.getLogger().warning( "Stable version: " + getNewVersion() + " is out! You're still running version: " + getOldVersion() );
                 plugin.getLogger().warning( "Download the newest version on: " + getResourceUrl() );
+                plugin.getServer().getPluginManager().registerEvents( UpdateChecker.this, plugin );
+            }
+            if ( getUpdateState() == UpdateState.DEV_BUILD )
+            {
+                plugin.getLogger().info( "Your version is bigger than the spigot one. Running dev build?" );
                 plugin.getServer().getPluginManager().registerEvents( UpdateChecker.this, plugin );
             }
         } );
@@ -106,7 +119,7 @@ public class UpdateChecker implements Listener
     {
         plugin.getServer().getScheduler().runTaskTimerAsynchronously( plugin, () ->
         {
-            if ( updateAvailable() )
+            if ( getUpdateState() == UpdateState.AVAILABLE )
             {
                 plugin.getLogger().info( "Proceeding update check..." );
                 plugin.getLogger().warning( "Stable version: " + getNewVersion() + " is out! You're still running version: " + getOldVersion() );
@@ -118,7 +131,7 @@ public class UpdateChecker implements Listener
                         message( online );
                     }
                 }
-            } else
+            } else if ( getUpdateState() == UpdateState.UP_TO_DATE )
             {
                 plugin.getLogger().info( "Proceeding update check..." );
                 plugin.getLogger().info( "Up to date!" );
@@ -132,7 +145,14 @@ public class UpdateChecker implements Listener
         Player player = event.getPlayer();
         if ( player.hasPermission( permission ) )
         {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask( plugin, () -> message( player ), 100 );
+            if ( getUpdateState() == UpdateState.AVAILABLE )
+            {
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask( plugin, () -> message( player ), 100 );
+            } else if ( getUpdateState() == UpdateState.DEV_BUILD )
+            {
+                plugin.getServer().getScheduler().scheduleSyncDelayedTask( plugin, () ->
+                        player.sendMessage( "[Poll] Your version is bigger than the spigot one. Running dev build?" ), 100 );
+            }
         }
     }
 
@@ -159,5 +179,12 @@ public class UpdateChecker implements Listener
     private String color(String text)
     {
         return ChatColor.translateAlternateColorCodes( '&', text );
+    }
+
+    private static enum UpdateState
+    {
+        AVAILABLE,
+        UP_TO_DATE,
+        DEV_BUILD
     }
 }
