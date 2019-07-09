@@ -26,20 +26,8 @@ public final class Poll extends JavaPlugin
     private QuestionHandler questionHandler;
     private QuestionAnnouncer announcer;
 
-    public static Function<String, String> ANSWER_FUNCTION = answer ->
-    {
-        char[] chars = answer.toCharArray();
-        for ( int i = 0; i < chars.length; i++ )
-        {
-            if ( chars[i] == '&' || chars[i] == '\u00a7' )
-            {
-                chars[i] = ' ';
-                chars[i + 1] = ' ';
-            }
-        }
-        String s = new String( chars );
-        return s.replace( " ", "" );
-    };
+    public static Function<String, String> ANSWER_FUNCTION = answer -> ChatColor.stripColor(
+            ChatColor.translateAlternateColorCodes( '&', answer ) );
 
     @Override
     public void onEnable()
