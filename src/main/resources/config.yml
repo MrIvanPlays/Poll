@@ -1,0 +1,44 @@
+#######################
+#         Poll        #
+#     by MrIvanPlays  #
+#######################
+
+# All polls
+questions:
+  difficulty: # This is the question identifier. Make it simple
+    question: "&eServer: &aWhat is the difficulty that the server should be?"
+    answers:
+      - "&cHard"
+      - "&eNormal"
+      - "&aEasy"
+  plugin:
+    question: "&eServer: &aWhich plugin should the server implement?"
+    answers:
+      - "&aMcMMO"
+      - "&b&lJobs"
+
+
+# Question announcer
+# Announces the questions to the player between the interval specified
+# If the player have voted already on the question, the question wont
+# get sent to the player
+# !! IMPORTANT !! Interval is measured in seconds
+question-announcer:
+  enable: true
+  random-order: true
+  interval: 300
+
+# All messages
+messages:
+  hover-message: "&aClick to vote"
+  usage: "&cUsage: /poll <reload|vote> [question identifier] [question answer]"
+  no-permission: "&cYou don't have permission to perform this command. Please contact administrator if you believe this is wrong."
+  reload-message: "&aReload success"
+  no-console: "&cThe console can't vote"
+  question-not-found: "&cThe specified question cannot be found"
+  already-voted: "&cYou have already voted for this question!"
+  invalid-answer: "&cInvalid answer. Valid options: %answers%"
+  vote-success: "&aYou have voted successfully"
+  pollvotes-usage: "&cUsage: /pollvotes <question identifier>"
+  votes-for: "&eVotes for %question%"
+  votes-message: "%answer% &rhas &e%votes% vote(s)"

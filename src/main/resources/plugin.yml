@@ -1,0 +1,12 @@
+name: Poll
+version: ${project.version}
+main: com.github.mrivanplays.poll.Poll
+api-version: 1.13
+description: Poll plugin
+authors: [MrIvanPlays]
+
+commands:
+  poll:
+    description: Main command for the plugin
+  pollvotes:
+    description: Counts the votes for a specific poll
