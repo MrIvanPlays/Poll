@@ -68,7 +68,7 @@ public final class Poll extends JavaPlugin
                 votersFile.serialize( SerializableQuestions.getForSerialize() ), 300 * 20, 600 * 3 * 20 );
         if ( getConfig().getBoolean( "update-check" ) )
         {
-            new UpdateChecker( this, 69153, "poll.updatenotify" );
+            new UpdateChecker( this, 69153, "poll.updatenotify" ).fetch();
         }
     }
 
