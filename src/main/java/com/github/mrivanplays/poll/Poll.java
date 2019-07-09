@@ -9,7 +9,7 @@ import com.github.mrivanplays.poll.storage.SerializableQuestion;
 import com.github.mrivanplays.poll.storage.SerializableQuestions;
 import com.github.mrivanplays.poll.storage.VotersFile;
 import com.github.mrivanplays.poll.util.MetricsSetup;
-import com.github.mrivanplays.poll.util.UpdateChecker;
+import com.github.mrivanplays.poll.util.UpdateCheckerSetup;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,9 +48,7 @@ public final class Poll extends JavaPlugin {
         // Can't harm the server while saving things into a file.
         getServer().getScheduler().runTaskTimerAsynchronously(this, () ->
                 votersFile.serialize(SerializableQuestions.getForSerialize()), 300 * 20, 600 * 3 * 20);
-        if (getConfig().getBoolean("update-check")) {
-            new UpdateChecker(this, 69153, "poll.updatenotify").fetch();
-        }
+        new UpdateCheckerSetup(this, "poll.updatenotify").setup();
     }
 
     @Override

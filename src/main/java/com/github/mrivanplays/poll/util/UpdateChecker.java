@@ -19,139 +19,235 @@
  **/
 package com.github.mrivanplays.poll.util;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class UpdateChecker implements Listener {
+/**
+ * Update checker
+ * All credits should go to the author
+ * https://www.spigotmc.org/threads/an-actually-decent-plugin-update-checker.344327/
+ *
+ * @author Parker Hawke - 2008Choco
+ */
+public final class UpdateChecker {
 
-    private URL url;
+    public static final VersionScheme VERSION_SCHEME_DECIMAL = (first, second) -> {
+        String[] firstSplit = splitVersionInfo(first), secondSplit = splitVersionInfo(second);
+        if (firstSplit == null || secondSplit == null) {
+            return null;
+        }
+
+        for (int i = 0; i < Math.min(firstSplit.length, secondSplit.length); i++) {
+            int currentValue = NumberUtils.toInt(firstSplit[i]), newestValue = NumberUtils.toInt(secondSplit[i]);
+
+            if (newestValue > currentValue) {
+                return second;
+            } else if (newestValue < currentValue) {
+                return first;
+            }
+        }
+
+        return (secondSplit.length > firstSplit.length) ? second : first;
+    };
+
+    private static final String USER_AGENT = "Poll-update-checker";
+    private static final String UPDATE_URL = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate";
+    private static final Pattern DECIMAL_SCHEME_PATTERN = Pattern.compile("\\d+(?:\\.\\d+)*");
+
+    private static UpdateChecker instance;
+
+    private UpdateResult lastResult = null;
+
     private final JavaPlugin plugin;
-    private final int projectId;
-    private final String permission;
+    private final int pluginID;
+    private final VersionScheme versionScheme;
 
-    public UpdateChecker(JavaPlugin plugin, int projectId, String permission) {
+    private UpdateChecker(JavaPlugin plugin, int pluginID, VersionScheme versionScheme) {
         this.plugin = plugin;
-        this.projectId = projectId;
-        this.permission = permission;
-        try {
-            url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + projectId);
-        } catch (IOException e) {
-            plugin.getLogger().severe("Could not connect to spigot: servers are down; there is a maintenance; other reason");
-        }
+        this.pluginID = pluginID;
+        this.versionScheme = versionScheme;
     }
 
-    private String getNewVersion() {
-        String newVersion = "";
-        try {
-            URLConnection connection = url.openConnection();
-            newVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-        } catch (IOException e) {
-            plugin.getLogger().warning("Could not gain current plugin version");
-        }
-        return newVersion;
-    }
+    public CompletableFuture<UpdateResult> requestUpdateCheck() {
+        return CompletableFuture.supplyAsync(() -> {
+            int responseCode;
+            try {
+                URL url = new URL(String.format(UPDATE_URL, pluginID));
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.addRequestProperty("User-Agent", USER_AGENT);
 
-    private String getOldVersion() {
-        return plugin.getDescription().getVersion();
-    }
+                InputStreamReader reader = new InputStreamReader(connection.getInputStream());
+                responseCode = connection.getResponseCode();
 
-    private String getResourceUrl() {
-        return "https://spigotmc.org/resources/" + projectId;
-    }
-
-    private UpdateState getUpdateState() {
-        if (getOldVersion().contains("SNAPSHOT")) {
-            return UpdateState.DEV_BUILD;
-        }
-        if (!getOldVersion().equalsIgnoreCase(getNewVersion())) {
-            return UpdateState.AVAILABLE;
-        }
-        return UpdateState.UP_TO_DATE;
-    }
-
-    public void fetch() {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            if (getUpdateState() == UpdateState.AVAILABLE) {
-                plugin.getLogger().warning("Stable version: " + getNewVersion() + " is out! You're still running version: " + getOldVersion());
-                plugin.getLogger().warning("Download the newest version on: " + getResourceUrl());
-                plugin.getServer().getPluginManager().registerEvents(UpdateChecker.this, plugin);
-            }
-            if (getUpdateState() == UpdateState.DEV_BUILD) {
-                plugin.getLogger().info("Your version is bigger than the spigot one. Running dev build?");
-                plugin.getServer().getPluginManager().registerEvents(UpdateChecker.this, plugin);
-            }
-        });
-        checkUpdates();
-    }
-
-    private void checkUpdates() {
-        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-            if (getUpdateState() == UpdateState.AVAILABLE) {
-                plugin.getLogger().info("Proceeding update check...");
-                plugin.getLogger().warning("Stable version: " + getNewVersion() + " is out! You're still running version: " + getOldVersion());
-                plugin.getLogger().warning("Download the newest version on: " + getResourceUrl());
-                for (Player online : plugin.getServer().getOnlinePlayers()) {
-                    if (online.hasPermission(permission)) {
-                        message(online);
-                    }
+                JsonElement element = new JsonParser().parse(reader);
+                if (!element.isJsonArray()) {
+                    return new UpdateResult(UpdateReason.INVALID_JSON);
                 }
-            } else if (getUpdateState() == UpdateState.UP_TO_DATE) {
-                plugin.getLogger().info("Proceeding update check...");
-                plugin.getLogger().info("Up to date!");
+
+                reader.close();
+
+                JsonObject versionObject = element.getAsJsonArray().get(0).getAsJsonObject();
+                String current = plugin.getDescription().getVersion(), newest = versionObject.get("name").getAsString();
+                String latest = versionScheme.compareVersions(current, newest);
+
+                if (latest == null) {
+                    return new UpdateResult(UpdateReason.UNSUPPORTED_VERSION_SCHEME);
+                } else if (latest.equals(current)) {
+                    return new UpdateResult(current.equals(newest) ? UpdateReason.UP_TO_DATE : UpdateReason.UNRELEASED_VERSION);
+                } else if (latest.equals(newest)) {
+                    return new UpdateResult(UpdateReason.NEW_UPDATE, latest);
+                }
+            } catch (IOException e) {
+                return new UpdateResult(UpdateReason.COULD_NOT_CONNECT);
+            } catch (JsonSyntaxException e) {
+                return new UpdateResult(UpdateReason.INVALID_JSON);
             }
-        }, 20 * 60 * 30, 20 * 60 * 30);
+
+            return new UpdateResult(responseCode == 401 ? UpdateReason.UNAUTHORIZED_QUERY : UpdateReason.UNKNOWN_ERROR);
+        });
     }
 
-    @EventHandler
-    public void notifyUpdate(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        if (player.hasPermission(permission)) {
-            if (getUpdateState() == UpdateState.AVAILABLE) {
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> message(player), 100);
-            } else if (getUpdateState() == UpdateState.DEV_BUILD) {
-                plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () ->
-                        player.sendMessage("[Poll] Your version is bigger than the spigot one. Running dev build?"), 100);
-            }
+    public UpdateResult getLastResult() {
+        return lastResult;
+    }
+
+    private static String[] splitVersionInfo(String version) {
+        Matcher matcher = DECIMAL_SCHEME_PATTERN.matcher(version);
+        if (!matcher.find()) {
+            return null;
         }
+
+        return matcher.group().split("\\.");
     }
 
-    private void message(Player player) {
-        ComponentBuilder baseMessage = new ComponentBuilder("Update found for " + plugin.getName() + " . \n").color(ChatColor.GRAY);
-        BaseComponent[] versionMessage = TextComponent.fromLegacyText(color("&7- &cOld version (current): "
-                + getOldVersion() + " &7; &aNew version: " + getNewVersion() + "\n"));
-        baseMessage.append(versionMessage);
-        TextComponent downloadCommand = new TextComponent("- Download via clicking ");
-        downloadCommand.setColor(ChatColor.GRAY);
-        TextComponent clickLink = new TextComponent("here");
-        clickLink.setColor(ChatColor.AQUA);
-        clickLink.setBold(true);
-        clickLink.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getResourceUrl()));
-        BaseComponent[] hoverMessage = new ComponentBuilder("Click here to be redirect to download page").color(ChatColor.DARK_GREEN).create();
-        clickLink.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
-        downloadCommand.addExtra(clickLink);
-        downloadCommand.addExtra(color("&7 ."));
-        baseMessage.append(downloadCommand);
-        player.spigot().sendMessage(baseMessage.create());
+    public static UpdateChecker init(JavaPlugin plugin, int pluginID, VersionScheme versionScheme) {
+        Preconditions.checkArgument(plugin != null, "Plugin cannot be null");
+        Preconditions.checkArgument(pluginID > 0, "Plugin ID must be greater than 0");
+        Preconditions.checkArgument(versionScheme != null, "null version schemes are unsupported");
+
+        return (instance == null) ? instance = new UpdateChecker(plugin, pluginID, versionScheme) : instance;
     }
 
-    private String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
+    public static UpdateChecker init(JavaPlugin plugin, int pluginID) {
+        return init(plugin, pluginID, VERSION_SCHEME_DECIMAL);
     }
 
-    private static enum UpdateState {
-        AVAILABLE,
-        UP_TO_DATE,
-        DEV_BUILD
+    public static UpdateChecker get() {
+        Preconditions.checkState(instance != null, "Instance has not yet been initialized. Be sure #init() has been invoked");
+        return instance;
     }
+
+    public static boolean isInitialized() {
+        return instance != null;
+    }
+
+
+    @FunctionalInterface
+    public static interface VersionScheme {
+
+        /**
+         * Compare two versions and return the higher of the two. If null is returned, it is assumed
+         * that at least one of the two versions are unsupported by this version scheme parser.
+         *
+         * @param first  the first version to check
+         * @param second the second version to check
+         * @return the greater of the two versions. null if unsupported version schemes
+         */
+        public String compareVersions(String first, String second);
+
+    }
+
+    public static enum UpdateReason {
+
+        /**
+         * A new update is available for download on SpigotMC.
+         */
+        NEW_UPDATE, // The only reason that requires an update
+
+        /**
+         * A successful connection to the SpiGet API could not be established.
+         */
+        COULD_NOT_CONNECT,
+
+        /**
+         * The JSON retrieved from SpiGet was invalid or malformed.
+         */
+        INVALID_JSON,
+
+        /**
+         * A 401 error was returned by the SpiGet API.
+         */
+        UNAUTHORIZED_QUERY,
+
+        /**
+         * The version of the plugin installed on the server is greater than the one uploaded
+         * to SpigotMC's resources section.
+         */
+        UNRELEASED_VERSION,
+
+        /**
+         * An unknown error occurred.
+         */
+        UNKNOWN_ERROR,
+
+        /**
+         * The plugin uses an unsupported version scheme, therefore a proper comparison between
+         * versions could not be made.
+         */
+        UNSUPPORTED_VERSION_SCHEME,
+
+        /**
+         * The plugin is up to date with the version released on SpigotMC's resources section.
+         */
+        UP_TO_DATE
+
+    }
+
+    public final class UpdateResult {
+
+        private final UpdateReason reason;
+        private final String newestVersion;
+
+        { // An actual use for initializer blocks. This is madness!
+            lastResult = this;
+        }
+
+        private UpdateResult(UpdateReason reason, String newestVersion) {
+            this.reason = reason;
+            this.newestVersion = newestVersion;
+        }
+
+        private UpdateResult(UpdateReason reason) {
+            Preconditions.checkArgument(reason != UpdateReason.NEW_UPDATE, "Reasons that require updates must also provide the latest version String");
+            this.reason = reason;
+            newestVersion = plugin.getDescription().getVersion();
+        }
+
+        public UpdateReason getReason() {
+            return reason;
+        }
+
+        public boolean requiresUpdate() {
+            return reason == UpdateReason.NEW_UPDATE;
+        }
+
+        public String getNewestVersion() {
+            return newestVersion;
+        }
+
+    }
+
 }
