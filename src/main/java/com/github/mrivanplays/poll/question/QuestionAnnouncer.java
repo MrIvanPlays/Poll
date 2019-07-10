@@ -20,14 +20,15 @@
  **/
 package com.github.mrivanplays.poll.question;
 
-import com.github.mrivanplays.poll.Poll;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+import com.github.mrivanplays.poll.Poll;
 
 @RequiredArgsConstructor
 public class QuestionAnnouncer {

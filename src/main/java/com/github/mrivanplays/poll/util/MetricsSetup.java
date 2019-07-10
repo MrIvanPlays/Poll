@@ -20,13 +20,14 @@
  **/
 package com.github.mrivanplays.poll.util;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.question.Question;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.bstats.bukkit.Metrics;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.github.mrivanplays.poll.Poll;
+import com.github.mrivanplays.poll.question.Question;
 
 @RequiredArgsConstructor
 public class MetricsSetup {

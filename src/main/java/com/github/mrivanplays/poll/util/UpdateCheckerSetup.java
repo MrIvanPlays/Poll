@@ -20,7 +20,6 @@
  **/
 package com.github.mrivanplays.poll.util;
 
-import com.github.mrivanplays.poll.Poll;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -32,6 +31,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import com.github.mrivanplays.poll.Poll;
 
 @RequiredArgsConstructor
 public class UpdateCheckerSetup implements Listener {

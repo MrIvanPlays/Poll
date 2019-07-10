@@ -20,10 +20,10 @@
  **/
 package com.github.mrivanplays.poll.question;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.storage.SerializableQuestion;
-import com.github.mrivanplays.poll.storage.SerializableQuestions;
-import com.github.mrivanplays.poll.util.Voter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -32,9 +32,10 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.github.mrivanplays.poll.Poll;
+import com.github.mrivanplays.poll.storage.SerializableQuestion;
+import com.github.mrivanplays.poll.storage.SerializableQuestions;
+import com.github.mrivanplays.poll.util.Voter;
 
 @RequiredArgsConstructor
 public class QuestionHandler {

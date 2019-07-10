@@ -20,16 +20,17 @@
  **/
 package com.github.mrivanplays.poll.commands;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.question.Question;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+
+import com.github.mrivanplays.poll.Poll;
+import com.github.mrivanplays.poll.question.Question;
 
 public class CommandPollVotes implements TabExecutor {
 

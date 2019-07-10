@@ -20,11 +20,12 @@
  **/
 package com.github.mrivanplays.poll.storage;
 
-import com.github.mrivanplays.poll.util.Voter;
+import java.util.Collection;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Collection;
+import com.github.mrivanplays.poll.util.Voter;
 
 @Data
 @AllArgsConstructor

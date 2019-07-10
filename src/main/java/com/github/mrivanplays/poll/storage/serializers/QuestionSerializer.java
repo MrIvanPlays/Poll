@@ -20,8 +20,10 @@
  **/
 package com.github.mrivanplays.poll.storage.serializers;
 
-import com.github.mrivanplays.poll.storage.SerializableQuestion;
-import com.github.mrivanplays.poll.util.Voter;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -31,9 +33,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
+import com.github.mrivanplays.poll.storage.SerializableQuestion;
+import com.github.mrivanplays.poll.util.Voter;
 
 public class QuestionSerializer implements JsonSerializer<SerializableQuestion>, JsonDeserializer<SerializableQuestion> {
 

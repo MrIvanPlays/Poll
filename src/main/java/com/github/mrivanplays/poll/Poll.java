@@ -20,6 +20,12 @@
  **/
 package com.github.mrivanplays.poll;
 
+import java.util.function.Function;
+
+import lombok.Getter;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.github.mrivanplays.poll.commands.CommandPoll;
 import com.github.mrivanplays.poll.commands.CommandPollSend;
 import com.github.mrivanplays.poll.commands.CommandPollVotes;
@@ -30,11 +36,6 @@ import com.github.mrivanplays.poll.storage.SerializableQuestions;
 import com.github.mrivanplays.poll.storage.VotersFile;
 import com.github.mrivanplays.poll.util.MetricsSetup;
 import com.github.mrivanplays.poll.util.UpdateCheckerSetup;
-import lombok.Getter;
-import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.function.Function;
 
 public final class Poll extends JavaPlugin {
 

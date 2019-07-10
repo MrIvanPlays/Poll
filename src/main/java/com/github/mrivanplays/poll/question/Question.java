@@ -20,16 +20,17 @@
  **/
 package com.github.mrivanplays.poll.question;
 
-import com.github.mrivanplays.poll.util.Voter;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
+
+import com.github.mrivanplays.poll.util.Voter;
 
 @Data
 public class Question {

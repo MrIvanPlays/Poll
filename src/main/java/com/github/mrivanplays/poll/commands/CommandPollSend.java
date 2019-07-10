@@ -20,8 +20,12 @@
  **/
 package com.github.mrivanplays.poll.commands;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.question.Question;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -29,11 +33,8 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.github.mrivanplays.poll.Poll;
+import com.github.mrivanplays.poll.question.Question;
 
 public class CommandPollSend implements TabExecutor {
 

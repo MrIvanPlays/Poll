@@ -20,11 +20,11 @@
  **/
 package com.github.mrivanplays.poll.storage;
 
-import com.github.mrivanplays.poll.question.Question;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.github.mrivanplays.poll.question.Question;
 
 public class SerializableQuestions {
 

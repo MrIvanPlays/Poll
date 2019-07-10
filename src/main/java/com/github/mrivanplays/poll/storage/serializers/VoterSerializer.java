@@ -20,10 +20,11 @@
  **/
 package com.github.mrivanplays.poll.storage.serializers;
 
-import com.github.mrivanplays.poll.util.Voter;
+import java.util.UUID;
+
 import com.google.gson.JsonObject;
 
-import java.util.UUID;
+import com.github.mrivanplays.poll.util.Voter;
 
 public class VoterSerializer {
 
