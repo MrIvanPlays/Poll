@@ -20,13 +20,10 @@
 package com.github.mrivanplays.poll.util;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -92,15 +89,12 @@ public final class UpdateChecker {
                 InputStreamReader reader = new InputStreamReader(connection.getInputStream());
                 responseCode = connection.getResponseCode();
 
-                JsonElement element = new JsonParser().parse(reader);
-                if (!element.isJsonArray()) {
-                    return new UpdateResult(UpdateReason.INVALID_JSON);
-                }
-
+                BufferedReader buffered = new BufferedReader(reader);
+                String newest = buffered.readLine();
+                buffered.close();
                 reader.close();
 
-                JsonObject versionObject = element.getAsJsonArray().get(0).getAsJsonObject();
-                String current = plugin.getDescription().getVersion(), newest = versionObject.get("name").getAsString();
+                String current = plugin.getDescription().getVersion();
                 String latest = versionScheme.compareVersions(current, newest);
 
                 if (latest == null) {
@@ -112,8 +106,6 @@ public final class UpdateChecker {
                 }
             } catch (IOException e) {
                 return new UpdateResult(UpdateReason.COULD_NOT_CONNECT);
-            } catch (JsonSyntaxException e) {
-                return new UpdateResult(UpdateReason.INVALID_JSON);
             }
 
             return new UpdateResult(responseCode == 401 ? UpdateReason.UNAUTHORIZED_QUERY : UpdateReason.UNKNOWN_ERROR);
@@ -158,62 +150,19 @@ public final class UpdateChecker {
     @FunctionalInterface
     public static interface VersionScheme {
 
-        /**
-         * Compare two versions and return the higher of the two. If null is returned, it is assumed
-         * that at least one of the two versions are unsupported by this version scheme parser.
-         *
-         * @param first  the first version to check
-         * @param second the second version to check
-         * @return the greater of the two versions. null if unsupported version schemes
-         */
         public String compareVersions(String first, String second);
 
     }
 
     public static enum UpdateReason {
 
-        /**
-         * A new update is available for download on SpigotMC.
-         */
-        NEW_UPDATE, // The only reason that requires an update
-
-        /**
-         * A successful connection to the SpiGet API could not be established.
-         */
+        NEW_UPDATE,
         COULD_NOT_CONNECT,
-
-        /**
-         * The JSON retrieved from SpiGet was invalid or malformed.
-         */
-        INVALID_JSON,
-
-        /**
-         * A 401 error was returned by the SpiGet API.
-         */
         UNAUTHORIZED_QUERY,
-
-        /**
-         * The version of the plugin installed on the server is greater than the one uploaded
-         * to SpigotMC's resources section.
-         */
         UNRELEASED_VERSION,
-
-        /**
-         * An unknown error occurred.
-         */
         UNKNOWN_ERROR,
-
-        /**
-         * The plugin uses an unsupported version scheme, therefore a proper comparison between
-         * versions could not be made.
-         */
         UNSUPPORTED_VERSION_SCHEME,
-
-        /**
-         * The plugin is up to date with the version released on SpigotMC's resources section.
-         */
         UP_TO_DATE
-
     }
 
     public final class UpdateResult {
@@ -231,7 +180,8 @@ public final class UpdateChecker {
         }
 
         private UpdateResult(UpdateReason reason) {
-            Preconditions.checkArgument(reason != UpdateReason.NEW_UPDATE, "Reasons that require updates must also provide the latest version String");
+            Preconditions.checkArgument(reason != UpdateReason.NEW_UPDATE,
+                    "Reasons that require updates must also provide the latest version String");
             this.reason = reason;
             newestVersion = plugin.getDescription().getVersion();
         }
