@@ -64,7 +64,7 @@ public final class UpdateChecker {
     };
 
     private static final String USER_AGENT = "Poll-update-checker";
-    private static final String UPDATE_URL = "https://api.spiget.org/v2/resources/%d/versions?size=1&sort=-releaseDate";
+    private static final String UPDATE_URL = "https://api.spigotmc.org/legacy/update.php?resource=%d";
     private static final Pattern DECIMAL_SCHEME_PATTERN = Pattern.compile("\\d+(?:\\.\\d+)*");
 
     private static UpdateChecker instance;
