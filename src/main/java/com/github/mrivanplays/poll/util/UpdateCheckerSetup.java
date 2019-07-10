@@ -47,14 +47,15 @@ public class UpdateCheckerSetup implements Listener {
                 UpdateChecker.UpdateReason reason = result.getReason();
                 if (reason == UpdateChecker.UpdateReason.NEW_UPDATE) {
                     plugin.getLogger().warning(
-                            String.format("An update is available! Poll %s may be downloaded from here: %s", result.getNewestVersion(), updateUrl));
+                            String.format("An update is available! Poll %s may be downloaded from here: %s", result.getNewestVersion(),
+                                    updateUrl));
                     plugin.getServer().getPluginManager().registerEvents(UpdateCheckerSetup.this, plugin);
                 } else if (reason == UpdateChecker.UpdateReason.UNRELEASED_VERSION) {
                     plugin.getLogger().severe("!! RUNNING UNRELEASED VERSION OF Poll !! (Is this a dev build?)");
                     plugin.getServer().getPluginManager().registerEvents(UpdateCheckerSetup.this, plugin);
-                } else {
+                } else if (reason != UpdateChecker.UpdateReason.UP_TO_DATE) {
                     plugin.getLogger().warning("Could not check for updates. Reason: " +
-                            reason.name().toLowerCase().replace("_", ""));
+                            reason.name().toLowerCase().replace("_", " "));
                 }
             });
         }
