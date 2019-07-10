@@ -6,7 +6,7 @@
 
     <groupId>com.github.mrivanplays</groupId>
     <artifactId>Poll</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>Poll</name>
