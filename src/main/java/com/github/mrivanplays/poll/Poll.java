@@ -35,6 +35,13 @@ public final class Poll extends JavaPlugin {
                 SerializableQuestions.register(question);
             }
         }
+        if (!getServer().getVersion().contains("Spigot") && getServer().getVersion().contains("CraftBukkit")) {
+            getLogger().severe("CraftBukkit is not supported in this plugin!");
+            getLogger().severe("You need to change your server software at least to Spigot");
+            getLogger().severe("Plugin disabled");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         questionHandler = new QuestionHandler(this);
         new CommandPoll(this);
         new CommandPollVotes(this);
