@@ -94,8 +94,7 @@ public class QuestionHandler {
 
     public Optional<Question> getQuestion(String identifier) {
         return getQuestions()
-                .stream()
-                .parallel()
+                .parallelStream()
                 .filter(question -> question.getIdentifier().toLowerCase().equalsIgnoreCase(identifier.toLowerCase()))
                 .findFirst();
     }

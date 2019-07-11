@@ -93,8 +93,10 @@ public class CommandPollSend implements TabExecutor {
             return Collections.emptyList();
         }
         if (args.length == 1) {
-            List<String> matches = plugin.getServer().getOnlinePlayers().parallelStream()
-                    .map(HumanEntity::getName).collect(Collectors.toList());
+            List<String> matches = plugin.getServer().getOnlinePlayers()
+                    .parallelStream()
+                    .map(HumanEntity::getName)
+                    .collect(Collectors.toList());
             matches.add("all");
             return matches.parallelStream()
                     .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))

@@ -74,8 +74,7 @@ public class CommandPollVotes implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
             return plugin.getQuestionHandler().getQuestions()
-                    .stream()
-                    .parallel()
+                    .parallelStream()
                     .map(Question::getIdentifier)
                     .filter(identifier -> identifier.toLowerCase().startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());

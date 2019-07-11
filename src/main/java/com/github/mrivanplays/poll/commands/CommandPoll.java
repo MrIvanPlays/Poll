@@ -115,8 +115,7 @@ public class CommandPoll implements TabExecutor {
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("vote")) {
             return plugin.getQuestionHandler().getQuestions()
-                    .stream()
-                    .parallel()
+                    .parallelStream()
                     .map(Question::getIdentifier)
                     .filter(identifier -> identifier.toLowerCase().startsWith(args[1].toLowerCase()))
                     .collect(Collectors.toList());
