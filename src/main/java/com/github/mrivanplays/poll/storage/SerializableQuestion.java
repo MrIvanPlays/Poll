@@ -20,21 +20,19 @@
  **/
 package com.github.mrivanplays.poll.storage;
 
+import com.github.mrivanplays.poll.util.Voter;
 import java.util.Collection;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import com.github.mrivanplays.poll.util.Voter;
 
 @Data
 @AllArgsConstructor
 public class SerializableQuestion {
 
-    private final String questionIdentifier;
-    private Collection<Voter> voters;
+  private final String questionIdentifier;
+  private Collection<Voter> voters;
 
-    public SerializableQuestion duplicate() {
-        return new SerializableQuestion(questionIdentifier, voters);
-    }
+  public SerializableQuestion duplicate() {
+    return new SerializableQuestion(questionIdentifier, voters);
+  }
 }

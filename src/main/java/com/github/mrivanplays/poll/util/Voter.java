@@ -21,12 +21,11 @@
 package com.github.mrivanplays.poll.util;
 
 import java.util.UUID;
-
 import lombok.Data;
 
 @Data
 public class Voter {
 
-    private final UUID uuid;
-    private final String answered;
+  private final UUID uuid;
+  private final String answered;
 }

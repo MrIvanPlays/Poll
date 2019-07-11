@@ -20,66 +20,65 @@
  **/
 package com.github.mrivanplays.poll.question;
 
+import com.github.mrivanplays.poll.Poll;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.github.mrivanplays.poll.Poll;
-
 @RequiredArgsConstructor
 public class QuestionAnnouncer {
 
-    private final Poll plugin;
-    private BukkitTask task;
-    private int count = 0;
+  private final Poll plugin;
+  private BukkitTask task;
+  private int count = 0;
 
-    private void sendMessage(Player player, Question question) {
-        if (!question.getAnswer(player.getUniqueId()).isPresent()) {
-            player.sendMessage(plugin.color(question.getMessage()));
-            player.sendMessage(" ");
-            for (BaseComponent[] answer : plugin.getQuestionHandler().getAnswersComponents(question)) {
-                player.spigot().sendMessage(answer);
-            }
-        }
+  private void sendMessage(Player player, Question question) {
+    if (!question.getAnswer(player.getUniqueId()).isPresent()) {
+      player.sendMessage(plugin.color(question.getMessage()));
+      player.sendMessage(" ");
+      for (BaseComponent[] answer : plugin.getQuestionHandler().getAnswersComponents(question)) {
+        player.spigot().sendMessage(answer);
+      }
     }
+  }
 
-    public void loadAsAnnouncements() {
-        if (!plugin.getConfig().getBoolean("question-announcer.enable")) {
-            return;
-        }
-        int interval = plugin.getConfig().getInt("question-announcer.interval");
-        if (interval > 0) {
-            task = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-                if (plugin.getConfig().getBoolean("question-announcer.random-order")) {
-                    List<Question> questionList = plugin.getQuestionHandler().getQuestions();
-                    Question question = questionList.get(ThreadLocalRandom.current().nextInt(0, questionList.size()));
-                    for (Player player : plugin.getServer().getOnlinePlayers()) {
-                        sendMessage(player, question);
-                    }
-                } else {
-                    Question question = plugin.getQuestionHandler().getQuestions().get(count);
-                    for (Player player : plugin.getServer().getOnlinePlayers()) {
-                        sendMessage(player, question);
-                    }
-                    count++;
-                    if (count + 1 > plugin.getQuestionHandler().getQuestions().size()) {
-                        count = 0;
-                    }
-                }
-            }, 0, interval * 20);
-        }
+  public void loadAsAnnouncements() {
+    if (!plugin.getConfig().getBoolean("question-announcer.enable")) {
+      return;
     }
+    int interval = plugin.getConfig().getInt("question-announcer.interval");
+    if (interval > 0) {
+      task = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+        if (plugin.getConfig().getBoolean("question-announcer.random-order")) {
+          List<Question> questionList = plugin.getQuestionHandler().getQuestions();
+          Question question = questionList
+              .get(ThreadLocalRandom.current().nextInt(0, questionList.size()));
+          for (Player player : plugin.getServer().getOnlinePlayers()) {
+            sendMessage(player, question);
+          }
+        } else {
+          Question question = plugin.getQuestionHandler().getQuestions().get(count);
+          for (Player player : plugin.getServer().getOnlinePlayers()) {
+            sendMessage(player, question);
+          }
+          count++;
+          if (count + 1 > plugin.getQuestionHandler().getQuestions().size()) {
+            count = 0;
+          }
+        }
+      }, 0, interval * 20);
+    }
+  }
 
-    public void reloadAnnouncements() {
-        if (task != null) {
-            task.cancel();
-        }
-        if (plugin.getConfig().getBoolean("question-announcer.enable")) {
-            loadAsAnnouncements();
-        }
+  public void reloadAnnouncements() {
+    if (task != null) {
+      task.cancel();
     }
+    if (plugin.getConfig().getBoolean("question-announcer.enable")) {
+      loadAsAnnouncements();
+    }
+  }
 }

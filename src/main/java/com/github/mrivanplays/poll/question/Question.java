@@ -20,57 +20,56 @@
  **/
 package com.github.mrivanplays.poll.question;
 
+import com.github.mrivanplays.poll.util.Voter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
-import com.github.mrivanplays.poll.util.Voter;
-
 @Data
 public class Question {
 
-    private final String identifier;
-    private final String message;
-    private final Collection<String> validAnswers;
-    @Setter(AccessLevel.NONE)
-    private Set<Voter> answered;
+  private final String identifier;
+  private final String message;
+  private final Collection<String> validAnswers;
+  @Setter(AccessLevel.NONE)
+  private Set<Voter> answered;
 
-    public Question(String identifier, String message, Collection<String> validAnswers) {
-        this(identifier, message, validAnswers, new HashSet<>());
-    }
+  public Question(String identifier, String message, Collection<String> validAnswers) {
+    this(identifier, message, validAnswers, new HashSet<>());
+  }
 
-    private Question(String identifier, String message, Collection<String> validAnswers, Set<Voter> answered) {
-        this.identifier = identifier;
-        this.message = message;
-        this.validAnswers = validAnswers;
-        this.answered = answered;
-    }
+  private Question(String identifier, String message, Collection<String> validAnswers,
+      Set<Voter> answered) {
+    this.identifier = identifier;
+    this.message = message;
+    this.validAnswers = validAnswers;
+    this.answered = answered;
+  }
 
-    public void addAnswer(UUID answerer, String whatAnswered) {
-        Voter voter = new Voter(answerer, whatAnswered);
-        addAnswer(voter);
-    }
+  public void addAnswer(UUID answerer, String whatAnswered) {
+    Voter voter = new Voter(answerer, whatAnswered);
+    addAnswer(voter);
+  }
 
-    public void addAnswer(Voter voter) {
-        answered.add(voter);
-    }
+  public void addAnswer(Voter voter) {
+    answered.add(voter);
+  }
 
-    public Optional<String> getAnswer(UUID answerer) {
-        for (Voter voter : answered) {
-            if (voter.getUuid().equals(answerer)) {
-                return Optional.of(voter.getAnswered());
-            }
-        }
-        return Optional.empty();
+  public Optional<String> getAnswer(UUID answerer) {
+    for (Voter voter : answered) {
+      if (voter.getUuid().equals(answerer)) {
+        return Optional.of(voter.getAnswered());
+      }
     }
+    return Optional.empty();
+  }
 
-    public Question duplicate() {
-        return new Question(identifier, message, validAnswers, answered);
-    }
+  public Question duplicate() {
+    return new Question(identifier, message, validAnswers, answered);
+  }
 }
