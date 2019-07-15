@@ -61,12 +61,9 @@ public class Question {
   }
 
   public Optional<String> getAnswer(UUID answerer) {
-    for (Voter voter : answered) {
-      if (voter.getUuid().equals(answerer)) {
-        return Optional.of(voter.getAnswered());
-      }
-    }
-    return Optional.empty();
+    return answered.parallelStream()
+        .filter(voter -> voter.getUuid().equals(answerer))
+        .findFirst().map(Voter::getAnswered);
   }
 
   public Question duplicate() {

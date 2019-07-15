@@ -30,12 +30,10 @@ public class SerializableQuestions {
   private static final List<SerializableQuestion> questions = new ArrayList<>();
 
   public static Optional<SerializableQuestion> getEquivalient(Question question) {
-    for (SerializableQuestion ser : questions) {
-      if (ser.getVoters().containsAll(question.getAnswered())) {
-        return Optional.of(ser);
-      }
-    }
-    return Optional.empty();
+    return questions.parallelStream()
+        .filter(ser -> ser.getQuestionIdentifier().toLowerCase()
+            .equalsIgnoreCase(question.getIdentifier().toLowerCase()))
+        .findFirst();
   }
 
   public static void register(SerializableQuestion serializableQuestion) {
