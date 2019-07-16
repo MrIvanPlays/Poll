@@ -65,13 +65,12 @@ public final class UpdateChecker {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.addRequestProperty("User-Agent", USER_AGENT);
 
-        InputStreamReader reader = new InputStreamReader(connection.getInputStream());
         responseCode = connection.getResponseCode();
 
-        BufferedReader buffered = new BufferedReader(reader);
+        BufferedReader buffered = new BufferedReader(
+            new InputStreamReader(connection.getInputStream()));
         String newest = buffered.readLine();
         buffered.close();
-        reader.close();
 
         String current = plugin.getDescription().getVersion();
         String latest = versionScheme.compareVersions(current, newest);
