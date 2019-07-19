@@ -66,7 +66,7 @@ public class QuestionHandler {
   }
 
   public void modify(Question question) {
-    Optional<SerializableQuestion> serializableOpt = SerializableQuestions.getEquivalient(question);
+    Optional<SerializableQuestion> serializableOpt = SerializableQuestions.getEquivalent(question);
     if (!serializableOpt.isPresent()) {
       SerializableQuestions
           .register(new SerializableQuestion(question.getIdentifier(), question.getAnswered()));

@@ -29,7 +29,7 @@ public class SerializableQuestions {
 
   private static final List<SerializableQuestion> questions = new ArrayList<>();
 
-  public static Optional<SerializableQuestion> getEquivalient(Question question) {
+  public static Optional<SerializableQuestion> getEquivalent(Question question) {
     return questions.parallelStream()
         .filter(ser -> ser.getQuestionIdentifier().toLowerCase()
             .equalsIgnoreCase(question.getIdentifier().toLowerCase()))
