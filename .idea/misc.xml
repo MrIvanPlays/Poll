@@ -5,9 +5,6 @@
       <item index="0" class="java.lang.String" itemvalue="org.bukkit.event.EventHandler" />
     </list>
   </component>
-  <component name="GoogleJavaFormatSettings">
-    <option name="enabled" value="true" />
-  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -21,11 +18,6 @@
         <expanded-state>
           <State />
         </expanded-state>
-        <selected-state>
-          <State>
-            <id>Android</id>
-          </State>
-        </selected-state>
       </profile-state>
     </entry>
   </component>
