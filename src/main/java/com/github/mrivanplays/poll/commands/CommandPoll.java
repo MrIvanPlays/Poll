@@ -112,7 +112,9 @@ public class CommandPoll implements TabExecutor {
       if (sender.hasPermission("poll.reload")) {
         matches.add("reload");
       }
-      return matches;
+      return matches.parallelStream()
+          .filter(match -> match.toLowerCase().startsWith(args[0].toLowerCase()))
+          .collect(Collectors.toList());
     }
     if (args.length == 2 && args[0].equalsIgnoreCase("vote")) {
       return plugin.getQuestionHandler().getQuestions()

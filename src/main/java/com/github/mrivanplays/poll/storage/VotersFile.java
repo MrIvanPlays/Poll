@@ -20,13 +20,11 @@
  **/
 package com.github.mrivanplays.poll.storage;
 
-import com.github.mrivanplays.poll.storage.serializers.QuestionSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -35,7 +33,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,14 +40,11 @@ import java.util.List;
 public class VotersFile {
 
   private final Gson gson;
-  private final Type questionType;
   private final File file;
 
   public VotersFile(File dataFolder) {
-    questionType = new TypeToken<SerializableQuestion>() {
-    }.getType();
     gson = new GsonBuilder()
-        .registerTypeAdapter(questionType, new QuestionSerializer())
+        .setPrettyPrinting()
         .create();
     file = new File(dataFolder + File.separator, "questiondata.json");
     createFile();
@@ -68,7 +62,7 @@ public class VotersFile {
           continue;
         }
         JsonObject question = element.getAsJsonObject();
-        questions.add(gson.fromJson(question, questionType));
+        questions.add(gson.fromJson(question, SerializableQuestion.class));
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -79,12 +73,8 @@ public class VotersFile {
   public void serialize(List<SerializableQuestion> questions) {
     file.delete();
     createFile();
-    JsonArray array = new JsonArray();
-    for (SerializableQuestion question : questions) {
-      array.add(gson.toJson(question, questionType));
-    }
     try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
-      gson.toJson(array, writer);
+      gson.toJson(questions, writer);
     } catch (IOException e) {
       e.printStackTrace();
     }
