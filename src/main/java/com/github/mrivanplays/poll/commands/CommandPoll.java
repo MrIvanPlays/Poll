@@ -1,23 +1,23 @@
 /*
- * Copyright 2019 Ivan Pekov (MrIvanPlays)
- * Copyright 2019 contributors
+* Copyright 2019 Ivan Pekov (MrIvanPlays)
+* Copyright 2019 contributors
 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* Permission is hereby granted, free of charge, to any person obtaining a copy of
+* this software and associated documentation files (the "Software"), to deal in the
+* Software without restriction, including without limitation the rights to use, copy,
+* modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+* and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
- * The above copyright notice and this permission notice shall be included in all copies
- * or substantial portions of the Software.
+* The above copyright notice and this permission notice shall be included in all copies
+* or substantial portions of the Software.
 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- **/
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**/
 package com.github.mrivanplays.poll.commands;
 
 import com.github.mrivanplays.poll.Poll;
@@ -75,8 +75,8 @@ public class CommandPoll implements TabExecutor {
       String answer = args[2];
       Optional<Question> questionOpt = plugin.getQuestionHandler().getQuestion(questionIdentifier);
       if (!questionOpt.isPresent()) {
-        player
-            .sendMessage(plugin.color(plugin.getConfig().getString("messages.question-not-found")));
+        player.sendMessage(
+            plugin.color(plugin.getConfig().getString("messages.question-not-found")));
         return true;
       }
       Question question = questionOpt.get();
@@ -85,15 +85,22 @@ public class CommandPoll implements TabExecutor {
         return true;
       }
       Question questionDup = question.duplicate();
-      List<String> validAnswersCopy = question.getValidAnswers().parallelStream()
-          .map(validAns -> Poll.ANSWER_FUNCTION.apply(validAns))
-          .collect(Collectors.toList());
+      List<String> validAnswersCopy =
+          question
+              .getValidAnswers()
+              .parallelStream()
+              .map(validAns -> Poll.ANSWER_FUNCTION.apply(validAns))
+              .collect(Collectors.toList());
       if (validAnswersCopy
           .parallelStream()
           .noneMatch(
               validAnswer -> validAnswer.toLowerCase().equalsIgnoreCase(answer.toLowerCase()))) {
-        player.sendMessage(plugin.color(plugin.getConfig().getString("messages.invalid-answer")
-            .replace("%answers%", Joiner.on(", ").join(question.getValidAnswers()))));
+        player.sendMessage(
+            plugin.color(
+                plugin
+                    .getConfig()
+                    .getString("messages.invalid-answer")
+                    .replace("%answers%", Joiner.on(", ").join(question.getValidAnswers()))));
         return true;
       }
       questionDup.addAnswer(player.getUniqueId(), answer);
@@ -105,19 +112,22 @@ public class CommandPoll implements TabExecutor {
   }
 
   @Override
-  public List<String> onTabComplete(CommandSender sender, Command command, String alias,
-      String[] args) {
+  public List<String> onTabComplete(
+      CommandSender sender, Command command, String alias, String[] args) {
     if (args.length == 1) {
       List<String> matches = new ArrayList<>(Collections.singleton("vote"));
       if (sender.hasPermission("poll.reload")) {
         matches.add("reload");
       }
-      return matches.parallelStream()
+      return matches
+          .parallelStream()
           .filter(match -> match.toLowerCase().startsWith(args[0].toLowerCase()))
           .collect(Collectors.toList());
     }
     if (args.length == 2 && args[0].equalsIgnoreCase("vote")) {
-      return plugin.getQuestionHandler().getQuestions()
+      return plugin
+          .getQuestionHandler()
+          .getQuestions()
           .parallelStream()
           .map(Question::getIdentifier)
           .filter(identifier -> identifier.toLowerCase().startsWith(args[1].toLowerCase()))
@@ -126,7 +136,9 @@ public class CommandPoll implements TabExecutor {
     if (args.length == 3 && args[0].equalsIgnoreCase("vote")) {
       Optional<Question> question = plugin.getQuestionHandler().getQuestion(args[1]);
       if (question.isPresent()) {
-        return question.get().getValidAnswers()
+        return question
+            .get()
+            .getValidAnswers()
             .parallelStream()
             .map(answer -> Poll.ANSWER_FUNCTION.apply(answer))
             .filter(answer -> answer.toLowerCase().startsWith(args[2].toLowerCase()))

@@ -1,23 +1,23 @@
 /*
- * Copyright 2019 Ivan Pekov (MrIvanPlays)
- * Copyright 2019 contributors
+* Copyright 2019 Ivan Pekov (MrIvanPlays)
+* Copyright 2019 contributors
 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* Permission is hereby granted, free of charge, to any person obtaining a copy of
+* this software and associated documentation files (the "Software"), to deal in the
+* Software without restriction, including without limitation the rights to use, copy,
+* modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+* and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
- * The above copyright notice and this permission notice shall be included in all copies
- * or substantial portions of the Software.
+* The above copyright notice and this permission notice shall be included in all copies
+* or substantial portions of the Software.
 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- **/
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**/
 package com.github.mrivanplays.poll.commands;
 
 import com.github.mrivanplays.poll.Poll;
@@ -52,28 +52,41 @@ public class CommandPollVotes implements TabExecutor {
       return true;
     }
     Question question = questionOptional.get();
-    sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.votes-for")
-        .replace("%question%", args[0])));
+    sender.sendMessage(
+        plugin.color(
+            plugin.getConfig().getString("messages.votes-for").replace("%question%", args[0])));
     for (String answer : question.getValidAnswers()) {
       String replaceColorCode = Poll.ANSWER_FUNCTION.apply(answer);
-      long votes = question.getAnswered()
-          .parallelStream()
-          .filter(voter -> voter.getAnswered().toLowerCase()
-              .equalsIgnoreCase(replaceColorCode.toLowerCase()))
-          .count();
-      String message = plugin.color(plugin.getConfig().getString("messages.votes-message")
-          .replace("%answer%", answer)
-          .replace("%votes%", Long.toString(votes)));
+      long votes =
+          question
+              .getAnswered()
+              .parallelStream()
+              .filter(
+                  voter ->
+                      voter
+                          .getAnswered()
+                          .toLowerCase()
+                          .equalsIgnoreCase(replaceColorCode.toLowerCase()))
+              .count();
+      String message =
+          plugin.color(
+              plugin
+                  .getConfig()
+                  .getString("messages.votes-message")
+                  .replace("%answer%", answer)
+                  .replace("%votes%", Long.toString(votes)));
       sender.sendMessage(message);
     }
     return true;
   }
 
   @Override
-  public List<String> onTabComplete(CommandSender sender, Command command, String alias,
-      String[] args) {
+  public List<String> onTabComplete(
+      CommandSender sender, Command command, String alias, String[] args) {
     if (args.length == 1) {
-      return plugin.getQuestionHandler().getQuestions()
+      return plugin
+          .getQuestionHandler()
+          .getQuestions()
           .parallelStream()
           .map(Question::getIdentifier)
           .filter(identifier -> identifier.toLowerCase().startsWith(args[0].toLowerCase()))

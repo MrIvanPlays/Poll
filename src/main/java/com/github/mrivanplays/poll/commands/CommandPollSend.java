@@ -1,23 +1,23 @@
 /*
- * Copyright 2019 Ivan Pekov (MrIvanPlays)
- * Copyright 2019 contributors
+* Copyright 2019 Ivan Pekov (MrIvanPlays)
+* Copyright 2019 contributors
 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in the
- * Software without restriction, including without limitation the rights to use, copy,
- * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* Permission is hereby granted, free of charge, to any person obtaining a copy of
+* this software and associated documentation files (the "Software"), to deal in the
+* Software without restriction, including without limitation the rights to use, copy,
+* modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+* and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
- * The above copyright notice and this permission notice shall be included in all copies
- * or substantial portions of the Software.
+* The above copyright notice and this permission notice shall be included in all copies
+* or substantial portions of the Software.
 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- **/
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+**/
 package com.github.mrivanplays.poll.commands;
 
 import com.github.mrivanplays.poll.Poll;
@@ -71,8 +71,8 @@ public class CommandPollSend implements TabExecutor {
       return true;
     }
     Question question = questionOpt.get();
-    List<BaseComponent[]> answersComponents = plugin.getQuestionHandler()
-        .getAnswersComponents(question);
+    List<BaseComponent[]> answersComponents =
+        plugin.getQuestionHandler().getAnswersComponents(question);
     for (Player player : sendTo) {
       player.sendMessage(plugin.color(question.getMessage()));
       player.sendMessage(" ");
@@ -87,23 +87,29 @@ public class CommandPollSend implements TabExecutor {
   }
 
   @Override
-  public List<String> onTabComplete(CommandSender sender, Command command, String alias,
-      String[] args) {
+  public List<String> onTabComplete(
+      CommandSender sender, Command command, String alias, String[] args) {
     if (!sender.hasPermission("poll.send")) {
       return Collections.emptyList();
     }
     if (args.length == 1) {
-      List<String> matches = plugin.getServer().getOnlinePlayers()
-          .parallelStream()
-          .map(HumanEntity::getName)
-          .collect(Collectors.toList());
+      List<String> matches =
+          plugin
+              .getServer()
+              .getOnlinePlayers()
+              .parallelStream()
+              .map(HumanEntity::getName)
+              .collect(Collectors.toList());
       matches.add("all");
-      return matches.parallelStream()
+      return matches
+          .parallelStream()
           .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
           .collect(Collectors.toList());
     }
     if (args.length == 2) {
-      return plugin.getQuestionHandler().getQuestions()
+      return plugin
+          .getQuestionHandler()
+          .getQuestions()
           .parallelStream()
           .map(Question::getIdentifier)
           .filter(identifier -> identifier.toLowerCase().startsWith(args[1].toLowerCase()))
