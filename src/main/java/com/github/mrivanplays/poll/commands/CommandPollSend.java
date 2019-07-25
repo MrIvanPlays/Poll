@@ -47,11 +47,12 @@ public class CommandPollSend implements TabExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (!sender.hasPermission("poll.send")) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.no-permission")));
+      sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.no-permission")));
       return true;
     }
     if (args.length == 0 || args.length == 1) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.pollsend-usage")));
+      sender.sendMessage(
+          Poll.COLORS.apply(plugin.getConfig().getString("messages.pollsend-usage")));
       return true;
     }
     Optional<Question> questionOpt = plugin.getQuestionHandler().getQuestion(args[1]);
@@ -61,26 +62,28 @@ public class CommandPollSend implements TabExecutor {
     } else {
       Player player = plugin.getServer().getPlayer(args[0]);
       if (player == null) {
-        sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.player-not-found")));
+        sender.sendMessage(
+            Poll.COLORS.apply(plugin.getConfig().getString("messages.player-not-found")));
         return true;
       }
       sendTo.add(player);
     }
     if (!questionOpt.isPresent()) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.question-not-found")));
+      sender.sendMessage(
+          Poll.COLORS.apply(plugin.getConfig().getString("messages.question-not-found")));
       return true;
     }
     Question question = questionOpt.get();
     List<BaseComponent[]> answersComponents =
         plugin.getQuestionHandler().getAnswersComponents(question);
     for (Player player : sendTo) {
-      player.sendMessage(plugin.color(question.getMessage()));
+      player.sendMessage(Poll.COLORS.apply(question.getMessage()));
       player.sendMessage(" ");
       for (BaseComponent[] answer : answersComponents) {
         player.spigot().sendMessage(answer);
       }
     }
-    sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.sent-success")));
+    sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.sent-success")));
     answersComponents.clear();
     sendTo.clear();
     return true;

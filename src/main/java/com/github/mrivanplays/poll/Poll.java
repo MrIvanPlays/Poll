@@ -41,8 +41,11 @@ public final class Poll extends JavaPlugin {
   @Getter private QuestionHandler questionHandler;
   private QuestionAnnouncer announcer;
 
-  public static Function<String, String> ANSWER_FUNCTION =
-      answer -> ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', answer));
+  public static Function<String, String> COLORS =
+      text -> ChatColor.translateAlternateColorCodes('&', text);
+
+  public static Function<String, String> ANSWERS =
+      answer -> ChatColor.stripColor(COLORS.apply(answer));
 
   @Override
   public void onEnable() {
@@ -86,10 +89,6 @@ public final class Poll extends JavaPlugin {
   public void onDisable() {
     votersFile.serialize(SerializableQuestions.getForSerialize());
     getLogger().info("Plugin disabled");
-  }
-
-  public String color(String text) {
-    return ChatColor.translateAlternateColorCodes('&', text);
   }
 
   public void reload() {

@@ -43,20 +43,22 @@ public class CommandPollVotes implements TabExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (args.length == 0) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.pollvotes-usage")));
+      sender.sendMessage(
+          Poll.COLORS.apply(plugin.getConfig().getString("messages.pollvotes-usage")));
       return true;
     }
     Optional<Question> questionOptional = plugin.getQuestionHandler().getQuestion(args[0]);
     if (!questionOptional.isPresent()) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.question-not-found")));
+      sender.sendMessage(
+          Poll.COLORS.apply(plugin.getConfig().getString("messages.question-not-found")));
       return true;
     }
     Question question = questionOptional.get();
     sender.sendMessage(
-        plugin.color(
+        Poll.COLORS.apply(
             plugin.getConfig().getString("messages.votes-for").replace("%question%", args[0])));
     for (String answer : question.getValidAnswers()) {
-      String replaceColorCode = Poll.ANSWER_FUNCTION.apply(answer);
+      String replaceColorCode = Poll.ANSWERS.apply(answer);
       long votes =
           question
               .getAnswered()
@@ -69,7 +71,7 @@ public class CommandPollVotes implements TabExecutor {
                           .equalsIgnoreCase(replaceColorCode.toLowerCase()))
               .count();
       String message =
-          plugin.color(
+          Poll.COLORS.apply(
               plugin
                   .getConfig()
                   .getString("messages.votes-message")

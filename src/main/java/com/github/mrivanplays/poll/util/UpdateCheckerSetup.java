@@ -100,7 +100,7 @@ public class UpdateCheckerSetup implements Listener {
                 plugin,
                 () ->
                     player.sendMessage(
-                        plugin.color(
+                        Poll.COLORS.apply(
                             "&4&l!! RUNNING UNRELEASED VERSION OF Poll !! &e(Is this a dev build?)")));
       }
     }
@@ -112,7 +112,7 @@ public class UpdateCheckerSetup implements Listener {
             .color(ChatColor.GRAY);
     BaseComponent[] versionMessage =
         TextComponent.fromLegacyText(
-            plugin.color(
+            Poll.COLORS.apply(
                 "&7- &cOld version (current): "
                     + plugin.getDescription().getVersion()
                     + " &7; &aNew version: "
@@ -132,7 +132,7 @@ public class UpdateCheckerSetup implements Listener {
             .create();
     clickLink.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
     downloadCommand.addExtra(clickLink);
-    downloadCommand.addExtra(plugin.color("&7 ."));
+    downloadCommand.addExtra(Poll.COLORS.apply("&7 ."));
     baseMessage.append(downloadCommand);
     player.spigot().sendMessage(baseMessage.create());
   }

@@ -81,14 +81,15 @@ public class QuestionHandler {
   public List<BaseComponent[]> getAnswersComponents(Question question) {
     List<BaseComponent[]> answersComponents = new ArrayList<>();
     for (String message : question.getValidAnswers()) {
-      String transform = Poll.ANSWER_FUNCTION.apply(message);
+      String transform = Poll.ANSWERS.apply(message);
       BaseComponent[] component =
-          new ComponentBuilder(plugin.color(message))
+          new ComponentBuilder(Poll.COLORS.apply(message))
               .event(
                   new HoverEvent(
                       HoverEvent.Action.SHOW_TEXT,
                       TextComponent.fromLegacyText(
-                          plugin.color(plugin.getConfig().getString("messages.hover-message")))))
+                          Poll.COLORS.apply(
+                              plugin.getConfig().getString("messages.hover-message")))))
               .event(
                   new ClickEvent(
                       ClickEvent.Action.RUN_COMMAND,

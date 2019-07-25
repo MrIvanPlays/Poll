@@ -46,28 +46,30 @@ public class CommandPoll implements TabExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (args.length == 0 || args.length == 2) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.usage")));
+      sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.usage")));
       return true;
     }
     // /poll reload
     if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
       if (!sender.hasPermission("poll.reload")) {
-        sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.no-permission")));
+        sender.sendMessage(
+            Poll.COLORS.apply(plugin.getConfig().getString("messages.no-permission")));
         return true;
       }
       plugin.reload();
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.reload-message")));
+      sender.sendMessage(
+          Poll.COLORS.apply(plugin.getConfig().getString("messages.reload-message")));
       return true;
     }
     // /cmd   1          2                   3
     // /poll vote <question identifier> <question answer>
     if (args.length == 1 && args[0].equalsIgnoreCase("vote")) {
-      sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.usage")));
+      sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.usage")));
       return true;
     }
     if (args.length == 3 && args[0].equalsIgnoreCase("vote")) {
       if (!(sender instanceof Player)) {
-        sender.sendMessage(plugin.color(plugin.getConfig().getString("messages.no-console")));
+        sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.no-console")));
         return true;
       }
       Player player = (Player) sender;
@@ -76,12 +78,13 @@ public class CommandPoll implements TabExecutor {
       Optional<Question> questionOpt = plugin.getQuestionHandler().getQuestion(questionIdentifier);
       if (!questionOpt.isPresent()) {
         player.sendMessage(
-            plugin.color(plugin.getConfig().getString("messages.question-not-found")));
+            Poll.COLORS.apply(plugin.getConfig().getString("messages.question-not-found")));
         return true;
       }
       Question question = questionOpt.get();
       if (question.getAnswer(player.getUniqueId()).isPresent()) {
-        player.sendMessage(plugin.color(plugin.getConfig().getString("messages.already-voted")));
+        player.sendMessage(
+            Poll.COLORS.apply(plugin.getConfig().getString("messages.already-voted")));
         return true;
       }
       Question questionDup = question.duplicate();
@@ -89,14 +92,14 @@ public class CommandPoll implements TabExecutor {
           question
               .getValidAnswers()
               .parallelStream()
-              .map(validAns -> Poll.ANSWER_FUNCTION.apply(validAns))
+              .map(validAns -> Poll.ANSWERS.apply(validAns))
               .collect(Collectors.toList());
       if (validAnswersCopy
           .parallelStream()
           .noneMatch(
               validAnswer -> validAnswer.toLowerCase().equalsIgnoreCase(answer.toLowerCase()))) {
         player.sendMessage(
-            plugin.color(
+            Poll.COLORS.apply(
                 plugin
                     .getConfig()
                     .getString("messages.invalid-answer")
@@ -105,7 +108,7 @@ public class CommandPoll implements TabExecutor {
       }
       questionDup.addAnswer(player.getUniqueId(), answer);
       plugin.getQuestionHandler().modify(questionDup);
-      player.sendMessage(plugin.color(plugin.getConfig().getString("messages.vote-success")));
+      player.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.vote-success")));
       return true;
     }
     return true;
@@ -140,7 +143,7 @@ public class CommandPoll implements TabExecutor {
             .get()
             .getValidAnswers()
             .parallelStream()
-            .map(answer -> Poll.ANSWER_FUNCTION.apply(answer))
+            .map(answer -> Poll.ANSWERS.apply(answer))
             .filter(answer -> answer.toLowerCase().startsWith(args[2].toLowerCase()))
             .collect(Collectors.toList());
       }

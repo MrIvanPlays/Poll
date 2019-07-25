@@ -37,7 +37,7 @@ public class QuestionAnnouncer {
 
   private void sendMessage(Player player, Question question) {
     if (!question.getAnswer(player.getUniqueId()).isPresent()) {
-      player.sendMessage(plugin.color(question.getMessage()));
+      player.sendMessage(Poll.COLORS.apply(question.getMessage()));
       player.sendMessage(" ");
       for (BaseComponent[] answer : plugin.getQuestionHandler().getAnswersComponents(question)) {
         player.spigot().sendMessage(answer);
