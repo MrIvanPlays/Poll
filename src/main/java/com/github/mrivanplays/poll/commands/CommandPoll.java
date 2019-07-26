@@ -94,10 +94,7 @@ public class CommandPoll implements TabExecutor {
               .parallelStream()
               .map(validAns -> Poll.ANSWERS.apply(validAns))
               .collect(Collectors.toList());
-      if (validAnswersCopy
-          .parallelStream()
-          .noneMatch(
-              validAnswer -> validAnswer.toLowerCase().equalsIgnoreCase(answer.toLowerCase()))) {
+      if (!validAnswersCopy.contains(answer)) {
         player.sendMessage(
             Poll.COLORS.apply(
                 plugin
