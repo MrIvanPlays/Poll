@@ -18,14 +18,21 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-package com.github.mrivanplays.poll.util;
+package com.mrivanplays.poll.storage;
 
-import java.util.UUID;
+import com.mrivanplays.poll.util.Voter;
+import java.util.Collection;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class Voter {
+@AllArgsConstructor
+public class SerializableQuestion {
 
-  private final UUID uuid;
-  private final String answered;
+  private final String questionIdentifier;
+  private Collection<Voter> voters;
+
+  public SerializableQuestion duplicate() {
+    return new SerializableQuestion(questionIdentifier, voters);
+  }
 }

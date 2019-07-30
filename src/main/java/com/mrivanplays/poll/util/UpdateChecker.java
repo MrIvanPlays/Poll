@@ -1,4 +1,4 @@
-package com.github.mrivanplays.poll.util;
+package com.mrivanplays.poll.util;
 
 import com.google.common.base.Preconditions;
 import java.io.BufferedReader;

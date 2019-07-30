@@ -18,9 +18,9 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-package com.github.mrivanplays.poll.question;
+package com.mrivanplays.poll.question;
 
-import com.github.mrivanplays.poll.util.Voter;
+import com.mrivanplays.poll.util.Voter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;

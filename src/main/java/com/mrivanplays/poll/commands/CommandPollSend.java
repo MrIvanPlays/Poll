@@ -18,10 +18,10 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-package com.github.mrivanplays.poll.commands;
+package com.mrivanplays.poll.commands;
 
-import com.github.mrivanplays.poll.Poll;
-import com.github.mrivanplays.poll.question.Question;
+import com.mrivanplays.poll.Poll;
+import com.mrivanplays.poll.question.Question;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

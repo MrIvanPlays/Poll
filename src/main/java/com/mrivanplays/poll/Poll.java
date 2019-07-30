@@ -18,18 +18,18 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 **/
-package com.github.mrivanplays.poll;
+package com.mrivanplays.poll;
 
-import com.github.mrivanplays.poll.commands.CommandPoll;
-import com.github.mrivanplays.poll.commands.CommandPollSend;
-import com.github.mrivanplays.poll.commands.CommandPollVotes;
-import com.github.mrivanplays.poll.question.QuestionAnnouncer;
-import com.github.mrivanplays.poll.question.QuestionHandler;
-import com.github.mrivanplays.poll.storage.SerializableQuestion;
-import com.github.mrivanplays.poll.storage.SerializableQuestions;
-import com.github.mrivanplays.poll.storage.VotersFile;
-import com.github.mrivanplays.poll.util.MetricsSetup;
-import com.github.mrivanplays.poll.util.UpdateCheckerSetup;
+import com.mrivanplays.poll.commands.CommandPoll;
+import com.mrivanplays.poll.commands.CommandPollSend;
+import com.mrivanplays.poll.commands.CommandPollVotes;
+import com.mrivanplays.poll.question.QuestionAnnouncer;
+import com.mrivanplays.poll.question.QuestionHandler;
+import com.mrivanplays.poll.storage.SerializableQuestion;
+import com.mrivanplays.poll.storage.SerializableQuestions;
+import com.mrivanplays.poll.storage.VotersFile;
+import com.mrivanplays.poll.util.MetricsSetup;
+import com.mrivanplays.poll.util.UpdateCheckerSetup;
 import java.util.function.Function;
 import lombok.Getter;
 import org.bukkit.ChatColor;
