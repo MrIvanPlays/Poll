@@ -24,13 +24,15 @@ import com.mrivanplays.poll.Poll;
 import com.mrivanplays.poll.question.Question;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.bstats.bukkit.Metrics;
 
-@RequiredArgsConstructor
 public class MetricsSetup {
 
   private final Poll plugin;
+
+  public MetricsSetup(Poll plugin) {
+    this.plugin = plugin;
+  }
 
   public void setup() {
     Metrics metrics = new Metrics(plugin);

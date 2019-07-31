@@ -27,7 +27,6 @@ import com.mrivanplays.poll.util.Voter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -35,10 +34,13 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.configuration.file.FileConfiguration;
 
-@RequiredArgsConstructor
 public class QuestionHandler {
 
   private final Poll plugin;
+
+  public QuestionHandler(Poll plugin) {
+    this.plugin = plugin;
+  }
 
   public List<Question> getQuestions() {
     List<Question> questions = new ArrayList<>();

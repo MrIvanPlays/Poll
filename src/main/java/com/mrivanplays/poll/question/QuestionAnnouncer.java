@@ -23,17 +23,19 @@ package com.mrivanplays.poll.question;
 import com.mrivanplays.poll.Poll;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-@RequiredArgsConstructor
 public class QuestionAnnouncer {
 
   private final Poll plugin;
   private BukkitTask task;
   private int count = 0;
+
+  public QuestionAnnouncer(Poll plugin) {
+    this.plugin = plugin;
+  }
 
   private void sendMessage(Player player, Question question) {
     if (!question.getAnswer(player.getUniqueId()).isPresent()) {

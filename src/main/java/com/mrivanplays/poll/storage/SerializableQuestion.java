@@ -22,15 +22,28 @@ package com.mrivanplays.poll.storage;
 
 import com.mrivanplays.poll.util.Voter;
 import java.util.Collection;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-@Data
-@AllArgsConstructor
 public class SerializableQuestion {
 
   private final String questionIdentifier;
   private Collection<Voter> voters;
+
+  public SerializableQuestion(String questionIdentifier, Collection<Voter> voters) {
+    this.questionIdentifier = questionIdentifier;
+    this.voters = voters;
+  }
+
+  public String getQuestionIdentifier() {
+    return questionIdentifier;
+  }
+
+  public Collection<Voter> getVoters() {
+    return voters;
+  }
+
+  public void setVoters(Collection<Voter> voters) {
+    this.voters = voters;
+  }
 
   public SerializableQuestion duplicate() {
     return new SerializableQuestion(questionIdentifier, voters);

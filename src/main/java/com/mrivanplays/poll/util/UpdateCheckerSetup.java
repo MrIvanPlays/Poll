@@ -21,7 +21,6 @@
 package com.mrivanplays.poll.util;
 
 import com.mrivanplays.poll.Poll;
-import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -33,11 +32,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-@RequiredArgsConstructor
 public class UpdateCheckerSetup implements Listener {
 
   private final Poll plugin;
   private final String permission;
+
+  public UpdateCheckerSetup(Poll plugin, String permission) {
+    this.plugin = plugin;
+    this.permission = permission;
+  }
 
   public void setup() {
     int spigotResourceId = 69153;

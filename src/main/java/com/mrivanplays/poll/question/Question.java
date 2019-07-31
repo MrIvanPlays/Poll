@@ -26,18 +26,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
 
-@Data
 public class Question {
 
   private final String identifier;
   private final String message;
   private final Collection<String> validAnswers;
 
-  @Setter(AccessLevel.NONE)
   private Set<Voter> answered;
 
   public Question(String identifier, String message, Collection<String> validAnswers) {
@@ -50,6 +45,22 @@ public class Question {
     this.message = message;
     this.validAnswers = validAnswers;
     this.answered = answered;
+  }
+
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public Collection<String> getValidAnswers() {
+    return validAnswers;
+  }
+
+  public Set<Voter> getAnswered() {
+    return answered;
   }
 
   public void addAnswer(UUID answerer, String whatAnswered) {

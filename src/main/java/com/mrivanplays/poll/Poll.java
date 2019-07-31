@@ -31,14 +31,13 @@ import com.mrivanplays.poll.storage.VotersFile;
 import com.mrivanplays.poll.util.MetricsSetup;
 import com.mrivanplays.poll.util.UpdateCheckerSetup;
 import java.util.function.Function;
-import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Poll extends JavaPlugin {
 
-  @Getter private VotersFile votersFile;
-  @Getter private QuestionHandler questionHandler;
+  private VotersFile votersFile;
+  private QuestionHandler questionHandler;
   private QuestionAnnouncer announcer;
 
   public static Function<String, String> COLORS =
@@ -95,5 +94,9 @@ public final class Poll extends JavaPlugin {
     reloadConfig();
     announcer.reloadAnnouncements();
     votersFile.serialize(SerializableQuestions.getForSerialize());
+  }
+
+  public QuestionHandler getQuestionHandler() {
+    return questionHandler;
   }
 }
