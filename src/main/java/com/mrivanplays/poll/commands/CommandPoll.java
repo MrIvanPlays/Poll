@@ -67,14 +67,14 @@ public class CommandPoll implements TabExecutor {
       sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.usage")));
       return true;
     }
-    if (args.length == 3 && args[0].equalsIgnoreCase("vote")) {
+    if (args.length >= 3 && args[0].equalsIgnoreCase("vote")) {
       if (!(sender instanceof Player)) {
         sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.no-console")));
         return true;
       }
       Player player = (Player) sender;
       String questionIdentifier = args[1];
-      String answer = args[2];
+      String answer = String.join(" ", Arrays.copyOfRange(args, 2,args.length));
       Optional<Question> questionOpt = plugin.getQuestionHandler().getQuestion(questionIdentifier);
       if (!questionOpt.isPresent()) {
         player.sendMessage(
