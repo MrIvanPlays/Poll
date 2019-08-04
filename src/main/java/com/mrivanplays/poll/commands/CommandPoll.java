@@ -24,6 +24,7 @@ import com.google.common.base.Joiner;
 import com.mrivanplays.poll.Poll;
 import com.mrivanplays.poll.question.Question;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,6 @@ public class CommandPoll implements TabExecutor {
           Poll.COLORS.apply(plugin.getConfig().getString("messages.reload-message")));
       return true;
     }
-    // /cmd   1          2                   3
     // /poll vote <question identifier> <question answer>
     if (args.length == 1 && args[0].equalsIgnoreCase("vote")) {
       sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.usage")));
@@ -74,7 +74,7 @@ public class CommandPoll implements TabExecutor {
       }
       Player player = (Player) sender;
       String questionIdentifier = args[1];
-      String answer = String.join(" ", Arrays.copyOfRange(args, 2,args.length));
+      String answer = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
       Optional<Question> questionOpt = plugin.getQuestionHandler().getQuestion(questionIdentifier);
       if (!questionOpt.isPresent()) {
         player.sendMessage(
