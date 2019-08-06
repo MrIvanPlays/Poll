@@ -23,7 +23,6 @@ package com.mrivanplays.poll.commands;
 import com.google.common.base.Joiner;
 import com.mrivanplays.poll.Poll;
 import com.mrivanplays.poll.question.Question;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -115,11 +114,7 @@ public class CommandPoll implements TabExecutor {
   public List<String> onTabComplete(
       CommandSender sender, Command command, String alias, String[] args) {
     if (args.length == 1) {
-      List<String> matches = new ArrayList<>(Collections.singleton("vote"));
-      if (sender.hasPermission("poll.reload")) {
-        matches.add("reload");
-      }
-      return matches
+      return Arrays.asList("vote", (sender.hasPermission("poll.reload") ? "reload" : ""))
           .parallelStream()
           .filter(match -> match.toLowerCase().startsWith(args[0].toLowerCase()))
           .collect(Collectors.toList());
