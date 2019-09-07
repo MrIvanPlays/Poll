@@ -1,6 +1,6 @@
 name: Poll
 version: ${project.version}
-main: com.github.mrivanplays.poll.Poll
+main: com.mrivanplays.poll.Poll
 api-version: 1.13
 description: Poll plugin
 authors: [MrIvanPlays]
