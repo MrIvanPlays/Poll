@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -74,17 +73,10 @@ public class CommandPollSend implements TabExecutor {
       return true;
     }
     Question question = questionOpt.get();
-    List<BaseComponent[]> answersComponents =
-        plugin.getQuestionHandler().getAnswersComponents(question);
     for (Player player : sendTo) {
-      player.sendMessage(Poll.COLORS.apply(question.getMessage()));
-      player.sendMessage(" ");
-      for (BaseComponent[] answer : answersComponents) {
-        player.spigot().sendMessage(answer);
-      }
+      plugin.getQuestionHandler().send(player, question);
     }
     sender.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.sent-success")));
-    answersComponents.clear();
     sendTo.clear();
     return true;
   }

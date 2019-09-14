@@ -27,12 +27,14 @@ import com.mrivanplays.poll.util.Voter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 public class QuestionHandler {
 
@@ -49,7 +51,7 @@ public class QuestionHandler {
       String questionMessage = config.getString("questions." + key + ".question");
       List<String> answers = config.getStringList("questions." + key + ".answers");
       Question question = new Question(key, questionMessage, answers);
-      List<SerializableQuestion> serializableQuestions = SerializableQuestions.getForSerialize();
+      Set<SerializableQuestion> serializableQuestions = SerializableQuestions.getForSerialize();
       if (!serializableQuestions.isEmpty()) {
         for (SerializableQuestion serQ : serializableQuestions) {
           if (serQ.getQuestionIdentifier().equalsIgnoreCase(question.getIdentifier())) {
@@ -80,7 +82,7 @@ public class QuestionHandler {
     SerializableQuestions.replace(serializable, dupeSerializable);
   }
 
-  public List<BaseComponent[]> getAnswersComponents(Question question) {
+  private List<BaseComponent[]> getAnswersComponents(Question question) {
     List<BaseComponent[]> answersComponents = new ArrayList<>();
     for (String message : question.getValidAnswers()) {
       String transform = Poll.ANSWERS.apply(message);
@@ -100,6 +102,14 @@ public class QuestionHandler {
       answersComponents.add(component);
     }
     return answersComponents;
+  }
+
+  public void send(Player player, Question question) {
+    player.sendMessage(Poll.COLORS.apply(question.getMessage()));
+    player.sendMessage(" ");
+    for (BaseComponent[] answer : getAnswersComponents(question)) {
+      player.spigot().sendMessage(answer);
+    }
   }
 
   public Optional<Question> getQuestion(String identifier) {

@@ -23,7 +23,6 @@ package com.mrivanplays.poll.question;
 import com.mrivanplays.poll.Poll;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -37,17 +36,13 @@ public class QuestionAnnouncer {
     this.plugin = plugin;
   }
 
-  private void sendMessage(Player player, Question question) {
-    if (!question.getAnswer(player.getUniqueId()).isPresent()) {
-      player.sendMessage(Poll.COLORS.apply(question.getMessage()));
-      player.sendMessage(" ");
-      for (BaseComponent[] answer : plugin.getQuestionHandler().getAnswersComponents(question)) {
-        player.spigot().sendMessage(answer);
-      }
-    }
-  }
-
   public void loadAsAnnouncements() {
+    if (plugin.getConfig().getBoolean("send-questions-only-on-join")) {
+      // we're ignoring the question announcer entirely if this option
+      // is being true. You want it only on join, why then you have the
+      // question announcer enabled?? (as an example)
+      return;
+    }
     if (!plugin.getConfig().getBoolean("question-announcer.enable")) {
       return;
     }
@@ -66,12 +61,18 @@ public class QuestionAnnouncer {
                           questionList.get(
                               ThreadLocalRandom.current().nextInt(0, questionList.size()));
                       for (Player player : plugin.getServer().getOnlinePlayers()) {
-                        sendMessage(player, question);
+                        if (question.getAnswer(player.getUniqueId()).isPresent()) {
+                          continue;
+                        }
+                        plugin.getQuestionHandler().send(player, question);
                       }
                     } else {
                       Question question = plugin.getQuestionHandler().getQuestions().get(count);
                       for (Player player : plugin.getServer().getOnlinePlayers()) {
-                        sendMessage(player, question);
+                        if (question.getAnswer(player.getUniqueId()).isPresent()) {
+                          continue;
+                        }
+                        plugin.getQuestionHandler().send(player, question);
                       }
                       count++;
                       if (count + 1 > plugin.getQuestionHandler().getQuestions().size()) {

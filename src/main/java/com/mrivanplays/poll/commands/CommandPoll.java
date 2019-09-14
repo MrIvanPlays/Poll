@@ -22,6 +22,7 @@ package com.mrivanplays.poll.commands;
 
 import com.google.common.base.Joiner;
 import com.mrivanplays.poll.Poll;
+import com.mrivanplays.poll.events.PlayerPollVotedEvent;
 import com.mrivanplays.poll.question.Question;
 import java.util.Arrays;
 import java.util.Collections;
@@ -104,6 +105,10 @@ public class CommandPoll implements TabExecutor {
       }
       questionDup.addAnswer(player.getUniqueId(), answer);
       plugin.getQuestionHandler().modify(questionDup);
+      plugin
+          .getServer()
+          .getPluginManager()
+          .callEvent(new PlayerPollVotedEvent(player, questionDup, answer));
       player.sendMessage(Poll.COLORS.apply(plugin.getConfig().getString("messages.vote-success")));
       return true;
     }

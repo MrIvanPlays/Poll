@@ -23,6 +23,8 @@ package com.mrivanplays.poll;
 import com.mrivanplays.poll.commands.CommandPoll;
 import com.mrivanplays.poll.commands.CommandPollSend;
 import com.mrivanplays.poll.commands.CommandPollVotes;
+import com.mrivanplays.poll.listeners.PlayerJoinListener;
+import com.mrivanplays.poll.listeners.PlayerPollVotedListener;
 import com.mrivanplays.poll.question.QuestionAnnouncer;
 import com.mrivanplays.poll.question.QuestionHandler;
 import com.mrivanplays.poll.storage.SerializableQuestion;
@@ -30,6 +32,7 @@ import com.mrivanplays.poll.storage.SerializableQuestions;
 import com.mrivanplays.poll.storage.VotersFile;
 import com.mrivanplays.poll.util.MetricsSetup;
 import com.mrivanplays.poll.util.UpdateCheckerSetup;
+import java.util.Set;
 import java.util.function.Function;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,8 +53,9 @@ public final class Poll extends JavaPlugin {
   public void onEnable() {
     saveDefaultConfig();
     votersFile = new VotersFile(getDataFolder());
-    if (!votersFile.deserialize().isEmpty()) {
-      for (SerializableQuestion question : votersFile.deserialize()) {
+    Set<SerializableQuestion> questions = votersFile.deserialize();
+    if (!questions.isEmpty()) {
+      for (SerializableQuestion question : questions) {
         SerializableQuestions.register(question);
       }
     }
@@ -67,6 +71,8 @@ public final class Poll extends JavaPlugin {
     new CommandPoll(this);
     new CommandPollVotes(this);
     new CommandPollSend(this);
+    getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+    getServer().getPluginManager().registerEvents(new PlayerPollVotedListener(this), this);
     announcer = new QuestionAnnouncer(this);
     announcer.loadAsAnnouncements();
     new MetricsSetup(this).setup();

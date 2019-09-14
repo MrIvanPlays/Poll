@@ -21,13 +21,13 @@
 package com.mrivanplays.poll.storage;
 
 import com.mrivanplays.poll.question.Question;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class SerializableQuestions {
 
-  private static final List<SerializableQuestion> questions = new ArrayList<>();
+  private static final Set<SerializableQuestion> questions = new HashSet<>();
 
   public static Optional<SerializableQuestion> getEquivalent(Question question) {
     return questions
@@ -51,7 +51,7 @@ public class SerializableQuestions {
     questions.add(newQuestion);
   }
 
-  public static List<SerializableQuestion> getForSerialize() {
+  public static Set<SerializableQuestion> getForSerialize() {
     return questions;
   }
 }

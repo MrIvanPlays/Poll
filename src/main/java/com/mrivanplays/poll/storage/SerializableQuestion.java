@@ -21,14 +21,14 @@
 package com.mrivanplays.poll.storage;
 
 import com.mrivanplays.poll.util.Voter;
-import java.util.Collection;
+import java.util.Set;
 
 public class SerializableQuestion {
 
   private final String questionIdentifier;
-  private Collection<Voter> voters;
+  private Set<Voter> voters;
 
-  public SerializableQuestion(String questionIdentifier, Collection<Voter> voters) {
+  public SerializableQuestion(String questionIdentifier, Set<Voter> voters) {
     this.questionIdentifier = questionIdentifier;
     this.voters = voters;
   }
@@ -37,11 +37,11 @@ public class SerializableQuestion {
     return questionIdentifier;
   }
 
-  public Collection<Voter> getVoters() {
+  public Set<Voter> getVoters() {
     return voters;
   }
 
-  public void setVoters(Collection<Voter> voters) {
+  public void setVoters(Set<Voter> voters) {
     this.voters = voters;
   }
 

@@ -18,6 +18,20 @@ questions:
       - "&b&lJobs"
 
 
+# Should the plugin send all questions only on join
+# By default that's false as we have the question announcer
+send-questions-only-on-join: false
+
+# I'm not sure why would you award the players when they
+# vote on the question as this is a survey, but we have
+# this feature
+# Executes the specified commands when the player have voted
+# on a question. Available placeholders: %answer% ; %questionId% ; %player%
+awards:
+  enabled: false
+  commands:
+    - "give %player% minecraft:diamond 1"
+
 # Question announcer
 # Announces the questions to the player between the interval specified
 # If the player have voted already on the question, the question wont

@@ -22,20 +22,14 @@ package com.mrivanplays.poll.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class VotersFile {
 
@@ -48,31 +42,26 @@ public class VotersFile {
     createFile();
   }
 
-  public List<SerializableQuestion> deserialize() {
-    List<SerializableQuestion> questions = new ArrayList<>();
-    try (Reader reader = new InputStreamReader(new FileInputStream(file))) {
-      JsonArray array = gson.fromJson(reader, JsonArray.class);
-      if (array == null || array.size() == 0) {
-        return Collections.emptyList();
-      }
-      for (JsonElement element : array) {
-        if (!element.isJsonObject()) {
-          continue;
-        }
-        JsonObject question = element.getAsJsonObject();
-        questions.add(gson.fromJson(question, SerializableQuestion.class));
+  public Set<SerializableQuestion> deserialize() {
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+      QuestionResult result = gson.fromJson(reader, QuestionResult.class);
+      if (result != null) {
+        return result.getQuestions();
+      } else {
+        return Collections.emptySet();
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      return Collections.emptySet();
     }
-    return questions;
   }
 
-  public void serialize(List<SerializableQuestion> questions) {
+  public void serialize(Set<SerializableQuestion> questions) {
     file.delete();
     createFile();
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
-      gson.toJson(questions, writer);
+    try (Writer writer = new FileWriter(file)) {
+      QuestionResult result = new QuestionResult();
+      result.setQuestions(questions);
+      gson.toJson(result, writer);
     } catch (IOException e) {
       e.printStackTrace();
     }
