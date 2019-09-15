@@ -24,6 +24,7 @@ package com.mrivanplays.poll.listeners;
 
 import com.mrivanplays.poll.Poll;
 import com.mrivanplays.poll.question.Question;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -38,12 +39,24 @@ public class PlayerJoinListener implements Listener {
 
   @EventHandler
   public void handle(PlayerJoinEvent event) {
+    int delay = plugin.getConfig().getInt("on-join-questions-delay");
+    if (delay == 0) {
+      handle(event.getPlayer());
+    } else {
+      plugin
+          .getServer()
+          .getScheduler()
+          .scheduleSyncDelayedTask(plugin, () -> handle(event.getPlayer()), delay * 20);
+    }
+  }
+
+  private void handle(Player player) {
     if (plugin.getConfig().getBoolean("send-questions-only-on-join")) {
       for (Question question : plugin.getQuestionHandler().getQuestions()) {
-        if (question.getAnswer(event.getPlayer().getUniqueId()).isPresent()) {
+        if (question.getAnswer(player.getUniqueId()).isPresent()) {
           continue;
         }
-        plugin.getQuestionHandler().send(event.getPlayer(), question);
+        plugin.getQuestionHandler().send(player, question);
       }
     }
   }

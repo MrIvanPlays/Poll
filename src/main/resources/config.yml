@@ -22,6 +22,9 @@ questions:
 # By default that's false as we have the question announcer
 send-questions-only-on-join: false
 
+# Delay for on join questions, specified in seconds
+on-join-questions-delay: 20
+
 # I'm not sure why would you award the players when they
 # vote on the question as this is a survey, but we have
 # this feature
