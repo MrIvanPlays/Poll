@@ -39,25 +39,25 @@ public class PlayerJoinListener implements Listener {
 
   @EventHandler
   public void handle(PlayerJoinEvent event) {
-    int delay = plugin.getConfig().getInt("on-join-questions-delay");
-    if (delay == 0) {
-      handle(event.getPlayer());
-    } else {
-      plugin
-          .getServer()
-          .getScheduler()
-          .scheduleSyncDelayedTask(plugin, () -> handle(event.getPlayer()), delay * 20);
+    if (plugin.getConfig().getBoolean("send-questions-only-on-join")) {
+      int delay = plugin.getConfig().getInt("on-join-questions-delay");
+      if (delay == 0) {
+        handle(event.getPlayer());
+      } else {
+        plugin
+            .getServer()
+            .getScheduler()
+            .scheduleSyncDelayedTask(plugin, () -> handle(event.getPlayer()), delay * 20);
+      }
     }
   }
 
   private void handle(Player player) {
-    if (plugin.getConfig().getBoolean("send-questions-only-on-join")) {
-      for (Question question : plugin.getQuestionHandler().getQuestions()) {
-        if (question.getAnswer(player.getUniqueId()).isPresent()) {
-          continue;
-        }
-        plugin.getQuestionHandler().send(player, question);
+    for (Question question : plugin.getQuestionHandler().getQuestions()) {
+      if (question.getAnswer(player.getUniqueId()).isPresent()) {
+        continue;
       }
+      plugin.getQuestionHandler().send(player, question);
     }
   }
 }
